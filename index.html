@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=0.3, maxmum-scale=1.0, minimum-scale=0.3">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#06070a" />
 <title>崔聿的小手机 · SEOUL 23:57</title>
 <style>
@@ -261,7 +261,7 @@ img{display:block;max-width:100%}
 .dock-wrap{position:relative;z-index:3;padding:0 12px 20px}
 .dock{
   height:88px;border-radius:31px;padding:12px 10px;
-  display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
   background:linear-gradient(155deg,rgba(255,255,255,.19),rgba(255,255,255,.07));
   -webkit-backdrop-filter:blur(34px) saturate(180%);backdrop-filter:blur(34px) saturate(180%);
   border:1px solid rgba(255,255,255,.16);
@@ -297,6 +297,10 @@ img{display:block;max-width:100%}
 .w-cal .w-day{font-size:11px;font-weight:600;color:#ff3b30;margin-top:2px}
 .w-cal .w-ev{margin-top:7px;font-size:10.5px;font-weight:600;line-height:1.35;display:flex;gap:5px;align-items:center}
 .w-cal .w-ev i{width:4px;height:4px;border-radius:50%;background:#ff9500;flex:none}
+.w-cal-wide{display:flex;gap:16px;align-items:flex-start;min-height:132px}
+.w-cal-wide .wc-left{flex:none;width:84px}
+.w-cal-wide .wc-right{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;padding-top:3px}
+.w-cal-wide .wc-right .w-ev{margin-top:0;font-weight:600}
 .w-weather .w-city{font-size:12px;font-weight:600;display:flex;justify-content:space-between;align-items:center;margin-top:6px}
 .w-weather .w-temp{font-size:40px;font-weight:300;line-height:1;letter-spacing:-2px;margin-top:7px}
 .w-weather .w-cond{font-size:10.5px;opacity:.75;margin-top:3px}
@@ -306,6 +310,13 @@ img{display:block;max-width:100%}
 .w-music .w-art::after{content:"BLUE HOUR";position:absolute;left:8px;bottom:6px;font-size:9px;letter-spacing:2px;font-weight:700;color:rgba(255,255,255,.72)}
 .w-music .w-song{font-size:11px;font-weight:650;margin-top:7px}
 .w-music .w-artist{font-size:9.5px;opacity:.55;margin-top:1px}
+.w-todo{background:linear-gradient(150deg,rgba(255,255,255,.95),rgba(245,245,250,.84));color:#111;text-shadow:none}
+.w-todo-list{margin-top:9px;display:flex;flex-direction:column;gap:7px}
+.w-todo-item{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:640;color:#3b3b44;letter-spacing:-.1px}
+.w-todo-item i{width:13px;height:13px;border-radius:50%;border:1.5px solid #cfcfd8;flex:none;display:grid;place-items:center;font-size:8px;font-style:normal;color:#fff;line-height:1}
+.w-todo-item.done{color:#a6a6af}
+.w-todo-item.done span{text-decoration:line-through}
+.w-todo-item.done i{background:#34c759;border-color:#34c759}
 
 /* ============================================================
    APP WINDOW / COMMON
@@ -506,6 +517,7 @@ img{display:block;max-width:100%}
   text-align:center;transition:.28s cubic-bezier(.32,.72,0,1);pointer-events:none;box-shadow:0 12px 34px rgba(0,0,0,.32);
 }
 #toast.show{opacity:1;transform:translate(-50%,0)}
+#toast{display:none!important}
 
 /* ============================================================
    KAKAO
@@ -1532,7 +1544,7 @@ img{display:block;max-width:100%}
 .call-msg .bub .cn.show{opacity:1}
 .call-choice{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding:0 10px;max-width:100%}
 .call-choice.show{opacity:1;pointer-events:auto}
-.call-choice button{min-height:40px;padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.12);color:#fff;font-size:12.5px;font-weight:600;text-align:left;line-height:1.35;flex:0 1 auto}
+.call-choice button{min-height:40px;height:auto;padding:9px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.12);color:#fff;font-size:12.5px;font-weight:600;text-align:left;line-height:1.35;flex:0 1 auto}
 .call-vm .vm-body .kr{font-size:14px;line-height:1.5;color:#fff}
 .call-vm .vm-body .cn{font-size:11px;color:rgba(255,255,255,.5);margin-top:4px}
 .call-thread{padding-bottom:250px;scrollbar-width:none;-ms-overflow-style:none}
@@ -1543,6 +1555,20 @@ img{display:block;max-width:100%}
 .call-choice .cc{font-size:10px;color:rgba(255,255,255,.5);line-height:1.3}
 
 .call-note{margin-top:10px;font-size:9px;color:rgba(255,255,255,.35)}
+.call-msg .bub .call-note{margin-top:8px;font-size:9.5px;line-height:1.6;font-style:italic;color:rgba(255,255,255,.42)}
+.call-msg.me .me-cn{display:block;margin-top:3px;font-size:10.5px;line-height:1.5;color:rgba(255,255,255,.74)}
+.call-thread{flex:1;min-height:0;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 26px);mask-image:linear-gradient(180deg,transparent 0,#000 26px)}
+.call-top{flex:none;z-index:4}
+.call-msg.them .bub .call-note{animation:noteIn .35s both}
+@keyframes noteIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+/* ---- 手机端：防止聚焦输入框时整页缩放 / 键盘顶屏时重新缩放 ---- */
+@media (pointer:coarse), (max-width:540px){
+  input,textarea,select{font-size:16px!important}
+  html,body{touch-action:manipulation}
+}
+html.touch input,html.touch textarea,html.touch select{font-size:16px!important}
+html.touch body{touch-action:manipulation}
 .k-cn{font-size:9.5px;color:#9aa0a6;margin-top:3px;line-height:1.4}
 .k-opts{display:flex;flex-direction:column;gap:6px;padding:8px 12px 4px;background:#fff;border-top:1px solid #f0f0f0}
 .k-opts button{border-radius:12px;border:1px solid #e6e0f5;background:#f7f3ff;color:#4a3a7a;text-align:left;padding:8px 14px;display:flex;flex-direction:column;gap:2px}
@@ -1986,6 +2012,7 @@ body{position:fixed!important;inset:0!important;overflow:hidden!important}
 .x-post-top .more{margin-left:auto;color:#536471}
 .x-text{font-size:14px;line-height:1.5;color:#0f1419;margin-top:4px}
 .x-zh{font-size:12px;line-height:1.5;color:#536471;margin-top:6px;padding-left:8px;border-left:2px solid #eff3f4}
+.x-zh-sm{font-size:11.5px;margin-top:4px;padding-left:7px;border-left-color:#dbe3e8}
 .x-media{margin-top:10px;border-radius:14px;overflow:hidden;height:150px}
 .x-meta{font-size:11px;color:#536471;margin-top:8px}
 .x-actions{display:flex;justify-content:space-between;max-width:300px;margin-top:8px;color:#536471;font-size:14px}
@@ -2037,6 +2064,91 @@ body{position:fixed!important;inset:0!important;overflow:hidden!important}
 
 .x-post:active{background:#f7f9f9}
 .x-replybar{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #eff3f4;padding:10px 14px 18px;z-index:40}
+
+/* ============================================================
+   MESSAGES · iMESSAGE（图2 列表 / 图3 对话）
+   ============================================================ */
+.sms-row{padding:12px 18px}
+.sms-row .av{width:48px;height:48px}
+.sms-row .n{font-size:14px;font-weight:640;letter-spacing:-.15px}
+.sms-row .p{font-size:11.5px;margin-top:4px}
+.sms-row .badge{min-width:19px;height:19px;border-radius:10px;font-size:10.5px;font-weight:750;background:#34c759}
+.sms-sec{display:flex;align-items:center;gap:8px;margin:18px 18px 4px;font-size:9.5px;font-weight:750;letter-spacing:1.4px;color:#a8a8ae;text-transform:uppercase}
+.sms-sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.08),rgba(0,0,0,0))}
+.sms-sec:first-child{margin-top:6px}
+
+.im-app{background:#f7f7fa}
+.im-head{
+  flex:none;display:flex;align-items:center;gap:5px;padding:52px 10px 8px;position:relative;z-index:30;
+  background:rgba(249,249,252,.88);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  border-bottom:.5px solid rgba(0,0,0,.08);
+}
+.im-head.dark{background:rgba(7,13,18,.4);border-bottom-color:rgba(255,255,255,.1);color:#fff}
+.im-ic{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:#0a84ff;flex:none;transition:background .15s}
+.im-ic:active{background:rgba(120,120,128,.16)}
+.im-ic svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.im-head.dark .im-ic{color:rgba(255,255,255,.94)}
+.im-id{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:7px}
+.im-id .av{width:34px;height:34px;border-radius:50%;overflow:hidden;flex:none;box-shadow:0 1px 4px rgba(0,0,0,.16)}
+.im-id .tx{min-width:0;max-width:178px}
+.im-id .nm{display:flex;align-items:center;justify-content:center;gap:2px;font-size:12.5px;font-weight:680;letter-spacing:-.2px;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.im-id .nm i{font-style:normal;font-size:10px;color:#c2c2c8;font-weight:400}
+.im-id .sub{font-size:9px;color:#9a9aa0;margin-top:1px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.im-head.dark .im-id .nm{color:#fff}
+.im-head.dark .im-id .sub{color:rgba(255,255,255,.58)}
+.im-head.dark .im-id .nm i{color:rgba(255,255,255,.45)}
+
+.im-thread{padding-bottom:6px}
+.imsg{letter-spacing:-.05px;animation:imIn .26s both}
+@keyframes imIn{from{opacity:0;transform:translateY(5px) scale(.99)}to{opacity:1;transform:none}}
+.im-tr{display:block;font-size:10.5px;line-height:1.45;opacity:.58;margin-top:3px;font-weight:400}
+.im-sys{text-align:center;font-size:9.5px;color:#9a9aa0;margin:12px 30px;line-height:1.55}
+.im-sent{display:block;text-align:right;font-size:8.5px;font-style:normal;color:#b0b0b5;padding:1px 17px 3px;margin-top:-2px}
+.imsg.imimg{padding:0;background:transparent!important;box-shadow:none!important;border:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.im-photo{position:relative;width:200px;max-width:100%;aspect-ratio:4/5;border-radius:17px;overflow:hidden;background:linear-gradient(155deg,#5c8199,#223540 55%,#0b141b);box-shadow:0 12px 26px rgba(0,0,0,.34)}
+.im-photo img{width:100%;height:100%;object-fit:cover;display:block;position:relative;z-index:2}
+.im-photo span{position:absolute;inset:0;display:grid;place-items:center;font-size:8.5px;letter-spacing:2.6px;color:rgba(255,255,255,.5);z-index:1;text-align:center;line-height:2}
+.im-photo.fail span{color:rgba(255,255,255,.7);font-size:9px}
+.msg-input{align-items:center}
+.msg-input .im-plus{width:32px;height:32px;border-radius:50%;background:#ececf0;color:#74747a;display:grid;place-items:center;font-size:17px;font-weight:300;flex:none}
+.msg-input .send svg{display:none}
+
+/* ---------- 朴哲 · 玻璃泡 + 水面照片 ---------- */
+.pk-room{background:#06121a;color:#fff}
+.pk-bg{position:absolute;inset:-12px;z-index:0;background-size:cover;background-position:center 42%;filter:brightness(.62) saturate(1.18) blur(1.2px);transform:scale(1.07)}
+.pk-shade{position:absolute;inset:0;z-index:1;background:
+  linear-gradient(180deg,rgba(4,14,20,.6) 0%,rgba(4,14,20,.08) 26%,rgba(3,10,15,.28) 62%,rgba(3,9,13,.86) 100%),
+  radial-gradient(ellipse at 76% 20%,rgba(84,208,222,.18),transparent 46%)}
+.pk-body{position:relative;z-index:3;background:transparent}
+.pk-body .im-thread{padding:8px 0 10px}
+.pk-room .imsg{max-width:80%;border:1px solid rgba(255,255,255,.09);box-shadow:0 8px 22px rgba(0,0,0,.26);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%)}
+.pk-room .imsg.them{background:rgba(19,37,41,.52);color:#fff}
+.pk-room .imsg.me{background:linear-gradient(180deg,#3f9dff,#0a7cff);border-color:rgba(255,255,255,.18);color:#fff;box-shadow:0 8px 24px rgba(10,110,255,.32)}
+.pk-room .msg-time{color:rgba(255,255,255,.6);font-weight:600;letter-spacing:.4px;text-shadow:0 1px 8px rgba(0,0,0,.55)}
+.pk-room .im-tr{opacity:.74}
+.pk-room .im-sys{color:rgba(255,255,255,.64);margin:14px 24px 10px}
+.pk-room .im-sent{color:rgba(255,255,255,.5)}
+
+.pk-bottom{flex:none;position:relative;z-index:20;background:linear-gradient(180deg,rgba(4,12,17,0),rgba(4,12,17,.74) 24%,rgba(4,11,16,.92) 100%)}
+.pk-tray{display:none;padding:2px 10px 0;max-height:320px;overflow-y:auto}
+.pk-tray.on{display:block;animation:trayIn .34s both}
+.pk-tray::-webkit-scrollbar{width:0}
+@keyframes trayIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.pk-tray .tt{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:750;letter-spacing:1.1px;color:rgba(255,255,255,.52);margin:8px 5px 7px;text-transform:uppercase}
+.pk-tray .tt::before{content:"";width:4px;height:4px;border-radius:50%;background:#4aa3ff;box-shadow:0 0 9px #4aa3ff}
+.pk-choice{display:flex;align-items:flex-start;gap:8px;width:100%;margin-bottom:7px;padding:10px 11px;border-radius:15px;text-align:left;color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.15);-webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);transition:transform .14s,background .14s}
+.pk-choice:active{transform:scale(.98);background:rgba(255,255,255,.2)}
+.pk-choice .tag{flex:none;min-width:20px;height:20px;padding:0 5px;border-radius:7px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.14);font-size:9.5px;font-weight:800;display:grid;place-items:center;margin-top:1px}
+.pk-choice .tx{flex:1;min-width:0;font-size:11.5px;line-height:1.42;font-weight:550}
+.pk-choice .tx i{display:block;font-style:normal;font-size:10px;line-height:1.4;color:rgba(255,255,255,.56);margin-top:2px}
+.pk-choice .ar{flex:none;color:rgba(255,255,255,.34);font-size:15px;line-height:1;margin-top:2px}
+.pk-input{flex:none;display:flex;align-items:center;gap:8px;padding:6px 10px 22px;position:relative;z-index:21}
+.pk-input .plus{width:32px;height:32px;border-radius:50%;flex:none;display:grid;place-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:17px;font-weight:300}
+.pk-input .fld{flex:1;min-width:0;height:34px;border-radius:17px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.09);color:#fff;padding:0 13px;font-size:12px;outline:0}
+.pk-input .fld::placeholder{color:rgba(255,255,255,.48)}
+.pk-input .mic{width:28px;height:28px;flex:none;display:grid;place-items:center;color:rgba(255,255,255,.62)}
+.pk-input .mic svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 
 </style>
 </head>
@@ -2210,10 +2322,9 @@ const sfx = {
   error: () => { tone(330, 0, .12, 'sine', .025); tone(250, .08, .2, 'sine', .02); },
 };
 function toast(msg, ms = 1900) {
-  toastEl.textContent = msg;
-  toastEl.classList.add('show');
-  clearTimeout(state.toastTimer);
-  state.toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms);
+  /* 底部黑色小弹窗已按需求移除：保留函数签名，调用处不再有任何显示 */
+  if (!toastEl) return;
+  toastEl.classList.remove('show');
 }
 function showBanner(appId, title, text, auto = 4300) {
   const meta = APPS[appId] || APPS.kakao;
@@ -2454,9 +2565,9 @@ const APPS = {
   home:     {name:'主页', label:'主页', bg:'#ff7a00', logo:LOGO.home, badge:0, status:'dark'},
 };
 
-const PAGE_ONE = ['kakao','instagram','x','bubble','notes','melon','baemin','coupang','poing','calendar','weather','photos','mail','clock','chatgpt','korean','map','settings','appstore','fitness'];
-const PAGE_TWO = ['phone','messages','camera','calculator','translate'];
-const DOCK_APPS = ['phone','safari','messages','kakao'];
+const PAGE_ONE = ['instagram','x','bubble','melon','notes','photos','baemin','coupang','appstore','settings','chatgpt','map'];
+const PAGE_TWO = ['weather','calendar','mail','clock','korean','fitness'];
+const DOCK_APPS = ['phone','messages','kakao'];
 
 function iconHTML(id, dock = false) {
   const a = APPS[id]; if (!a) return '';
@@ -2523,7 +2634,19 @@ const IG_AVATARS = {
   novae_offical: 'data:image/jpeg;base64,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'
 };
 
+const IG_REMOTE = {
+  novae_offical: 'https://i.postimg.cc/7Lk6wQ7Q/NOVAE.jpg',
+  yul_novae:     'https://i.postimg.cc/9MrZtych/dou-bao.png',
+  mcy_novae:     'https://i.postimg.cc/HWrBqzsY/CHIYE.jpg',
+  phajun_novae:  'https://i.postimg.cc/bdXGWpy7/HAJUN.jpg',
+  dorimi_novae:  'https://i.postimg.cc/KvXrdyHj/DORIM.jpg',
+  yuumaa_novae:  'https://i.postimg.cc/NM5kwGt4/YUMA.jpg',
+  yuumma_novae:  'https://i.postimg.cc/NM5kwGt4/YUMA.jpg'
+};
+
 function igAvatar(name, size) {
+  const rem = IG_REMOTE[String(name || '')];
+  if (rem) return `<div style="width:${size}px;height:${size}px;border-radius:50%;overflow:hidden;flex:none;background:#f0f0f4"><img src="${rem}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none'"></div>`;
   const map = {novae_offical:'novae', yul_novae:'yul', yul:'yul', mcy_novae:'chiye', chiye:'chiye', phajun_novae:'hajun', hajun:'hajun', dorimi_novae:'dorim', dorim:'dorim', yuumaa_novae:'yuma', yuumma_novae:'yuma', yuma:'yuma'};
   const mem = window.MEM_AV || {};
   const key = map[String(name || '')];
@@ -2573,14 +2696,14 @@ const IG_POSTS = [
       ['orbis_yul', '형이 쏜다고? 캡처했다, 나중에 말 바꾸지 마 😭‖队长请客？截图存证了，别赖账 😭', '12.3万', '2小时前'],
       ['novae_offical', '영수증 보관 완료.‖发票已存档。', '8.7万', '2小时前'],
       ['mcy_novae', '나 혼자 고기 세 접시 먹고 혼났다.‖我一个人吃了三盘肉，然后被骂了。', '6.1万', '2小时前'],
-      ['dorimi_novae', '他连生菜都抢，别说肉了。', '4.4万', '1小时前'],
-      ['yuumaa_novae', '哥，我那份呢 🥲', '3.9万', '1小时前'],
+      ['dorimi_novae', '형은 상추까지 뺏어 먹어. 고기는 말할 것도 없고.‖他连生菜都抢，别说肉了。', '4.4万', '1小时前'],
+      ['yuumaa_novae', '형, 내 몫은요? 🥲‖哥，我那份呢 🥲', '3.9万', '1小时前'],
       ['phajun_novae', '막내는 항상 마지막에 젓가락 든다. 이건 팀 규칙.‖忙内永远最后一个动筷，这是队规。', '2.8万', '1小时前'],
-      ['catlover_orbis', '五个人的氛围真的像一家人，看哭了', '9,812', '1小时前'],
+      ['catlover_orbis', 'five of them really feel like a family, i cried‖五个人的氛围真的像一家人，看哭了', '9,812', '1小时前'],
       ['blue_hour_1024', '10.24, 2년을 기다렸다.‖10.24，我等了整整两年。', '7,204', '58分钟前'],
-      ['orbis_nuomi', '崔聿的手也太白了吧…', '5,310', '45分钟前'],
+      ['orbis_nuomi', 'チェ・ユルの手、白すぎない…？‖崔聿的手也太白了吧…', '5,310', '45分钟前'],
       ['novae_daily', '테이블에 유자차. 리더 취향은 10년째 그대로.‖桌上有柚子茶，队长口味十年如一日。', '4,027', '32分钟前'],
-      ['yul_archive_', '第三张椅子是空的吗？谁没来', '3,118', '25分钟前'],
+      ['yul_archive_', '三番目の椅子、空いてない？誰か来てない？‖第三张椅子是空的吗？谁没来', '3,118', '25分钟前'],
       ['orbis_5th', '다섯 명이 같이 웃는 모습이 제일 좋다.‖五个人一起笑的样子最好了。', '2,904', '18分钟前']
     ]
   },
@@ -2603,9 +2726,9 @@ const IG_POSTS = [
       ['mcy_novae', '고양이 표정: 이 사람 누구지, 나랑 친해?‖猫的表情：这谁啊，我和他熟吗', '3.3万', '3小时前'],
       ['dorimi_novae', '지난번에 5분만 안기로 했잖아‖上次说好只抱五分钟的', '2.1万', '3小时前'],
       ['catmom_orbis', '고양이: 살려줘, 나 이 사람 몰라‖猫：救救我，我不认识这个人', '8,904', '2小时前'],
-      ['novae_offical', '请不要在官方帐号下面抢猫。', '6,520', '2小时前'],
-      ['yul_nuomi_love', '我们糯米是 NOVAE 第六位成员', '4,102', '1小时前'],
-      ['orbis_yul', '崔聿家的猫都有粉丝了，我算什么', '3,720', '1小时前'],
+      ['novae_offical', '공식 계정 밑에서 고양이 뺏지 마세요.‖请不要在官方帐号下面抢猫。', '6,520', '2小时前'],
+      ['yul_nuomi_love', '우리 누미는 NOVAE 여섯 번째 멤버‖我们糯米是 NOVAE 第六位成员', '4,102', '1小时前'],
+      ['orbis_yul', '최율네 고양이도 팬이 생겼네. 나는 뭐지.‖崔聿家的猫都有粉丝了，我算什么', '3,720', '1小时前'],
       ['yu_m_a_fan', '유마 셀카 실력이 드디어 늘었다.‖悠真的自拍技术终于进步了。', '2,418', '46分钟前'],
       ['nuomi_daily', '누미 따로 계정 하나 파주세요.‖求糯米单独开个帐号。', '1,905', '30分钟前']
     ]
@@ -2626,13 +2749,13 @@ const IG_POSTS = [
       ['dorimi_novae', '주먹밥 몇 개 샀어? 솔직히 말해.‖买了几个饭团？说实话。', '5.8万', '7小时前'],
       ['mcy_novae', '네 개. 하나는 형 거.‖四个。还有一个是你的。', '7.2万', '7小时前'],
       ['orbis_chiye', '새벽 세 시의 치예, 이거 폰 배경으로 써야겠다.‖凌晨三点的炽野，我需要这张当锁屏。', '1.8万', '6小时前'],
-      ['phajun_novae', '又在便利店拍氛围照，装什么文艺', '1.1万', '6小时前'],
-      ['yul_novae', '早点回去睡，明天还要录音。', '4.6万', '5小时前'],
-      ['mcy_novae', '队长你也没睡啊。', '3.9万', '5小时前'],
-      ['novae_offical', '公司不报销夜宵。', '2.7万', '4小时前'],
-      ['orbis_5th', '这个光线，随便一拍就是画报', '9,204', '3小时前'],
-      ['chiye_dance', '主舞的腰线我磕到了', '7,318', '2小时前'],
-      ['late_night_orbis', '凌晨三点的便利店是爱豆的共同回忆', '5,402', '1小时前']
+      ['phajun_novae', '또 편의점에서 감성 사진 찍고, 무슨 문학청년이야‖又在便利店拍氛围照，装什么文艺', '1.1万', '6小时前'],
+      ['yul_novae', '일찍 들어가 자. 내일 녹음 있어.‖早点回去睡，明天还要录音。', '4.6万', '5小时前'],
+      ['mcy_novae', '형도 안 잤잖아요.‖队长你也没睡啊。', '3.9万', '5小时前'],
+      ['novae_offical', '회사는 야식 안 됩니다.‖公司不报销夜宵。', '2.7万', '4小时前'],
+      ['orbis_5th', '이 조명이면 아무렇게나 찍어도 화보‖这个光线，随便一拍就是画报', '9,204', '3小时前'],
+      ['chiye_dance', '메인댄서 허리 라인 미쳤다‖主舞的腰线我磕到了', '7,318', '2小时前'],
+      ['late_night_orbis', '새벽 세 시 편의점은 아이돌의 공통 기억‖凌晨三点的便利店是爱豆的共同回忆', '5,402', '1小时前']
     ]
   },
   {
@@ -2648,18 +2771,18 @@ const IG_POSTS = [
     caption: '还没写完的歌。先弹一段给你们听。',
     tags: '#自作曲 #BLUEHOUR #orbis',
     commentsList: [
-      ['orbis_yul', '凌晨三点，队长在写歌，我在被窝里哭', '28.4万', '11小时前'],
-      ['novae_offical', '这段旋律已经登记版权了，别再乱传。', '15.2万', '11小时前'],
-      ['yul_novae', '传就传吧，反正是写给她们的。', '42.8万', '10小时前'],
-      ['dorimi_novae', '哥，副歌第二句再高一点会不会更好', '11.6万', '10小时前'],
-      ['mcy_novae', '手好好看，歌也好听，人有点烦。', '9.3万', '9小时前'],
-      ['yuumaa_novae', '我哥弹琴的时候最帅，不接受反驳', '8.1万', '9小时前'],
-      ['phajun_novae', '听得我想重新学钢琴了', '6.4万', '8小时前'],
-      ['orbis_piano', '这个前奏我循环了四十遍', '5.2万', '7小时前'],
-      ['blue_hour_1024', '10.24 请一定要收录这首', '3.8万', '6小时前'],
-      ['orbis_nuomi', '猫在旁边睡着了吧，羡慕猫', '2.9万', '5小时前'],
-      ['yul_archive_', '最后那个和弦留白，太会了', '2.2万', '4小时前'],
-      ['novae_daily', '队长你手冷不冷，我给你捂', '1.7万', '3小时前']
+      ['orbis_yul', '새벽 세 시, 리더는 곡 쓰고 나는 이불 속에서 울고‖凌晨三点，队长在写歌，我在被窝里哭', '28.4万', '11小时前'],
+      ['novae_offical', '이 멜로디 저작권 등록했어요. 함부로 퍼뜨리지 마세요.‖这段旋律已经登记版权了，别再乱传。', '15.2万', '11小时前'],
+      ['yul_novae', '퍼져도 돼. 어차피 걔들한테 쓴 거니까.‖传就传吧，反正是写给她们的。', '42.8万', '10小时前'],
+      ['dorimi_novae', '형, 후렴 두 번째 문장 조금 더 높이면 어떨까요‖哥，副歌第二句再高一点会不会更好', '11.6万', '10小时前'],
+      ['mcy_novae', '손은 예쁘고 노래는 좋고 사람은 좀 짜증나.‖手好好看，歌也好听，人有点烦。', '9.3万', '9小时前'],
+      ['yuumaa_novae', '우리 형 피아노 칠 때가 제일 멋있어요. 반박 안 받아요‖我哥弹琴的时候最帅，不接受反驳', '8.1万', '9小时前'],
+      ['phajun_novae', '듣다 보니 피아노 다시 배우고 싶어졌어‖听得我想重新学钢琴了', '6.4万', '8小时前'],
+      ['orbis_piano', '이 인트로 마흔 번 반복했어요‖这个前奏我循环了四十遍', '5.2万', '7小时前'],
+      ['blue_hour_1024', 'please include this one on 10.24‖10.24 请一定要收录这首', '3.8万', '6小时前'],
+      ['orbis_nuomi', '猫、隣で寝てるんでしょ。猫がうらやましい‖猫在旁边睡着了吧，羡慕猫', '2.9万', '5小时前'],
+      ['yul_archive_', '最後のコードの余白、うますぎる‖最后那个和弦留白，太会了', '2.2万', '4小时前'],
+      ['novae_daily', '리더 손 안 추워요? 제가 잡아줄게요‖队长你手冷不冷，我给你捂', '1.7万', '3小时前']
     ]
   },
   {
@@ -2675,16 +2798,16 @@ const IG_POSTS = [
     caption: '主打歌 guide 第七版。说实话，第一版最对味。',
     tags: '#录像 #主打歌 #DORIM',
     commentsList: [
-      ['yul_novae', '第一版是我弹的，当然对味。', '18.9万', '1天前'],
-      ['dorimi_novae', '……行吧，队长说得对。', '12.4万', '1天前'],
-      ['orbis_dorim', '道凛的嗓音是那种会让人安静下来的类型', '6.3万', '23小时前'],
-      ['mcy_novae', '第七版比第一版稳，别自恋了', '4.7万', '22小时前'],
-      ['yuumaa_novae', '录音室的灯好像一直没关过', '3.5万', '20小时前'],
-      ['novae_offical', '第七版通过。辛苦。', '2.9万', '18小时前'],
-      ['phajun_novae', '主唱就是主唱', '2.2万', '16小时前'],
-      ['orbis_5th', '这段我听了一晚上，耳朵怀孕', '1.8万', '12小时前'],
-      ['vocal_orbis', '高音那里处理得好干净', '1.1万', '8小时前'],
-      ['dorim_pic', '请把第七版和第一版都发出来', '8,204', '5小时前']
+      ['yul_novae', '첫 번째 버전은 내가 친 거야. 당연히 맞지.‖第一版是我弹的，当然对味。', '18.9万', '1天前'],
+      ['dorimi_novae', '...알겠어요. 형 말이 맞네요.‖……行吧，队长说得对。', '12.4万', '1天前'],
+      ['orbis_dorim', '도림 목소리는 사람을 조용하게 만드는 타입‖道凛的嗓音是那种会让人安静下来的类型', '6.3万', '23小时前'],
+      ['mcy_novae', '7판이 1판보다 안정적이야. 나르시즘 그만.‖第七版比第一版稳，别自恋了', '4.7万', '22小时前'],
+      ['yuumaa_novae', '녹음실 불이 계속 켜져 있는 것 같아요‖录音室的灯好像一直没关过', '3.5万', '20小时前'],
+      ['novae_offical', '7판 통과. 수고했어요.‖第七版通过。辛苦。', '2.9万', '18小时前'],
+      ['phajun_novae', '메인보컬은 역시 메인보컬‖主唱就是主唱', '2.2万', '16小时前'],
+      ['orbis_5th', '이 부분 밤새 들었어요. 귀가 녹는다‖这段我听了一晚上，耳朵怀孕', '1.8万', '12小时前'],
+      ['vocal_orbis', '고음 처리 진짜 깔끔하다‖高音那里处理得好干净', '1.1万', '8小时前'],
+      ['dorim_pic', '7판이랑 1판 둘 다 올려주세요‖请把第七版和第一版都发出来', '8,204', '5小时前']
     ]
   }
 ];
@@ -2703,12 +2826,12 @@ const IG_PROFILE_POSTS = [
     caption: '十月刊。黑白比彩色更像那天的心情。',
     tags: '#画报 #十月刊',
     commentsList: [
-      ['orbis_yul', '这张我真的存了，锁屏换了三次', '9.2万', '2天前'],
-      ['novae_offical', '摄影师说不用修图。', '4.8万', '2天前'],
-      ['dorimi_novae', '哥你能不能别这么帅，我有压力', '3.1万', '1天前'],
-      ['mcy_novae', '街拍就街拍，装什么电影男主', '2.6万', '1天前'],
-      ['yul_archive_', '下颌线能用来切纸', '1.4万', '1天前'],
-      ['orbis_5th', '这张氛围绝了，像九十年代的胶片', '9,120', '20小时前']
+      ['orbis_yul', '이거 진짜 저장했어요. 잠금화면 세 번 바꿈‖这张我真的存了，锁屏换了三次', '9.2万', '2天前'],
+      ['novae_offical', '포토그래퍼가 보정 필요 없다고 했어요.‖摄影师说不用修图。', '4.8万', '2天前'],
+      ['dorimi_novae', '형 그렇게 멋있으면 저 압박받아요‖哥你能不能别这么帅，我有压力', '3.1万', '1天前'],
+      ['mcy_novae', '스트리트 스냅은 스냅인데, 무슨 영화 남주야‖街拍就街拍，装什么电影男主', '2.6万', '1天前'],
+      ['yul_archive_', 'この顎のライン、紙が切れる‖下颌线能用来切纸', '1.4万', '1天前'],
+      ['orbis_5th', '분위기 미쳤다. 90년대 필름 같아‖这张氛围绝了，像九十年代的胶片', '9,120', '20小时前']
     ]
   },
   {
@@ -2724,12 +2847,12 @@ const IG_PROFILE_POSTS = [
     caption: '同一天的两种状态。墨镜那版是出门前，另一版是回家后。',
     tags: '#OOTD #同一天',
     commentsList: [
-      ['orbis_yul', '出门前：谁能不爱我。回家后：谁能抱抱我', '6.7万', '5天前'],
-      ['yuumaa_novae', '第二张的表情好像我欠你钱', '2.4万', '4天前'],
-      ['mcy_novae', '这外套借我穿一次', '1.9万', '4天前'],
-      ['dorimi_novae', '借了就别想拿回来了', '1.3万', '3天前'],
-      ['style_orbis', '这个牌子是他私服还是赞助？求同款', '8,402', '3天前'],
-      ['orbis_5th', '两种都好看，但第二张更真实', '6,118', '2天前']
+      ['orbis_yul', '나가기 전: 누가 나를 안 사랑해. 들어온 후: 누가 나를 안아줘‖出门前：谁能不爱我。回家后：谁能抱抱我', '6.7万', '5天前'],
+      ['yuumaa_novae', '두 번째 표정은 내가 돈 빌린 것 같아요‖第二张的表情好像我欠你钱', '2.4万', '4天前'],
+      ['mcy_novae', '이 코트 한 번만 빌려줘‖这外套借我穿一次', '1.9万', '4天前'],
+      ['dorimi_novae', '빌려가면 다시 못 돌려받을걸요‖借了就别想拿回来了', '1.3万', '3天前'],
+      ['style_orbis', '이 브랜드 사복이에요 광고예요? 같은 거 어디서 사요‖这个牌子是他私服还是赞助？求同款', '8,402', '3天前'],
+      ['orbis_5th', '둘 다 예쁜데 두 번째가 더 진짜 같아‖两种都好看，但第二张更真实', '6,118', '2天前']
     ]
   },
   {
@@ -2745,12 +2868,12 @@ const IG_PROFILE_POSTS = [
     caption: '梨泰院逛了一下午，买了件不该买的毛衣。',
     tags: '#梨泰院 #购物',
     commentsList: [
-      ['orbis_yul', '不该买 = 已经买了 👍', '3.8万', '1周前'],
-      ['dorimi_novae', '那件毛衣我看到了，颜色很勇敢', '1.7万', '1周前'],
-      ['phajun_novae', '队长穿什么都行，这就是脸的力量', '1.2万', '6天前'],
-      ['novae_offical', '下次出门记得戴口罩。', '2.9万', '6天前'],
-      ['yul_novae', '戴了，没人认出我。', '4.4万', '6天前'],
-      ['orbis_seoul', '梨泰院这家店我也去过！', '5,204', '5天前']
+      ['orbis_yul', '안 사야지 = 이미 샀다 👍‖不该买 = 已经买了 👍', '3.8万', '1周前'],
+      ['dorimi_novae', '그 스웨터 봤는데, 색이 아주 용감해요‖那件毛衣我看到了，颜色很勇敢', '1.7万', '1周前'],
+      ['phajun_novae', '형은 뭘 입어도 돼요. 이게 얼굴의 힘‖队长穿什么都行，这就是脸的力量', '1.2万', '6天前'],
+      ['novae_offical', '다음에 나갈 땐 마스크 꼭 하세요.‖下次出门记得戴口罩。', '2.9万', '6天前'],
+      ['yul_novae', '했어. 아무도 못 알아보던데.‖戴了，没人认出我。', '4.4万', '6天前'],
+      ['orbis_seoul', '이태원 이 가게 나도 가봤어요!‖梨泰院这家店我也去过！', '5,204', '5天前']
     ]
   },
   {
@@ -2766,10 +2889,10 @@ const IG_PROFILE_POSTS = [
     caption: '自拍。角度找了三分钟。',
     tags: '',
     commentsList: [
-      ['orbis_yul', '三分钟很值得，谢谢你努力', '2.6万', '2周前'],
-      ['yuumaa_novae', '哥，这个角度我拍不出', '9,204', '2周前'],
-      ['mcy_novae', '自恋。', '1.4万', '2周前'],
-      ['orbis_5th', '头发有点翘，很可爱', '4,118', '13天前']
+      ['orbis_yul', '3분 충분히 값어치 있어요. 노력 감사합니다‖三分钟很值得，谢谢你努力', '2.6万', '2周前'],
+      ['yuumaa_novae', '형, 이 각도는 저는 못 찍어요‖哥，这个角度我拍不出', '9,204', '2周前'],
+      ['mcy_novae', '나르시스트.‖自恋。', '1.4万', '2周前'],
+      ['orbis_5th', '머리 살짝 뜬 거 귀엽다‖头发有点翘，很可爱', '4,118', '13天前']
     ]
   }
 ];
@@ -2788,11 +2911,11 @@ const IG_REELS_POSTS = [
     caption: '凌晨三点，写不完的歌和弹不准的琴。',
     tags: '#reels #自作曲',
     commentsList: [
-      ['orbis_yul', '弹不准？这叫留白。', '7.8万', '11小时前'],
-      ['dorimi_novae', '留白是你手滑的借口吧', '4.2万', '10小时前'],
-      ['yul_novae', '……闭嘴。', '9.1万', '10小时前'],
-      ['orbis_piano', '这一段求完整版', '2.6万', '9小时前'],
-      ['novae_daily', '凌晨三点还在工作室，心疼', '1.9万', '8小时前']
+      ['orbis_yul', '못 친다고? 이건 여백이야.‖弹不准？这叫留白。', '7.8万', '11小时前'],
+      ['dorimi_novae', '여백은 형 손 미끄러진 변명이죠‖留白是你手滑的借口吧', '4.2万', '10小时前'],
+      ['yul_novae', '...닥쳐.‖……闭嘴。', '9.1万', '10小时前'],
+      ['orbis_piano', '이 부분 풀버전 주세요‖这一段求完整版', '2.6万', '9小时前'],
+      ['novae_daily', '새벽 세 시까지 작업실이라니, 마음 아파‖凌晨三点还在工作室，心疼', '1.9万', '8小时前']
     ]
   },
   {
@@ -2808,10 +2931,10 @@ const IG_REELS_POSTS = [
     caption: '第七版。嗓子今天有点哑，但我喜欢这个质感。',
     tags: '#reels #主唱',
     commentsList: [
-      ['orbis_dorim', '哑一点的嗓音更好听，真的', '5.1万', '23小时前'],
-      ['yul_novae', '这才叫主唱。', '3.4万', '22小时前'],
-      ['dorimi_novae', '哥你夸我我有点害怕', '2.8万', '21小时前'],
-      ['vocal_orbis', '换气声都舍不得剪掉', '1.2万', '18小时前']
+      ['orbis_dorim', '목 쉰 목소리가 더 좋아요, 진짜‖哑一点的嗓音更好听，真的', '5.1万', '23小时前'],
+      ['yul_novae', '이게 메인보컬이지.‖这才叫主唱。', '3.4万', '22小时前'],
+      ['dorimi_novae', '형이 칭찬하면 좀 무서워요‖哥你夸我我有点害怕', '2.8万', '21小时前'],
+      ['vocal_orbis', '숨소리도 자르기 아깝다‖换气声都舍不得剪掉', '1.2万', '18小时前']
     ]
   },
   {
@@ -2827,11 +2950,11 @@ const IG_REELS_POSTS = [
     caption: '新编舞三十秒。膝盖已阵亡，明天还要跳。',
     tags: '#reels #编舞 #CHIYE',
     commentsList: [
-      ['orbis_chiye', '这三十秒我看了三十遍', '9.4万', '1天前'],
-      ['phajun_novae', '膝盖：我不同意', '4.6万', '1天前'],
-      ['yul_novae', '动作干净了，但第二节慢了半拍。', '8.2万', '22小时前'],
-      ['mcy_novae', '队长你连这个都数？', '3.9万', '21小时前'],
-      ['dance_orbis', '主舞的定点太强了', '2.1万', '18小时前']
+      ['orbis_chiye', '이 30초를 서른 번 봤어요‖这三十秒我看了三十遍', '9.4万', '1天前'],
+      ['phajun_novae', '무릎: 난 반대다‖膝盖：我不同意', '4.6万', '1天前'],
+      ['yul_novae', '동작은 깔끔해졌는데, 2절이 반 박자 느려.‖动作干净了，但第二节慢了半拍。', '8.2万', '22小时前'],
+      ['mcy_novae', '형이 그런 것까지 세요?‖队长你连这个都数？', '3.9万', '21小时前'],
+      ['dance_orbis', '메인댄서 고정 동작 미쳤다‖主舞的定点太强了', '2.1万', '18小时前']
     ]
   },
   {
@@ -2847,11 +2970,11 @@ const IG_REELS_POSTS = [
     caption: '来看球，被旁边的大叔认出来了。他还让我唱一段。',
     tags: '#reels #看球',
     commentsList: [
-      ['orbis_hajun', '大叔：唱一段。你：好的（鞠躬）', '6.2万', '2天前'],
-      ['mcy_novae', '全场最尴尬的十秒', '3.8万', '2天前'],
-      ['yuumaa_novae', '我在旁边笑到不行', '2.4万', '1天前'],
-      ['phajun_novae', '别笑了，我当场想消失', '5.1万', '1天前'],
-      ['orbis_5th', '这才是真实的何俊哈哈哈', '1.8万', '20小时前']
+      ['orbis_hajun', '아저씨: 한 소절 해봐. 너: 네 (인사)‖大叔：唱一段。你：好的（鞠躬）', '6.2万', '2天前'],
+      ['mcy_novae', '경기장에서 제일 어색한 10초‖全场最尴尬的十秒', '3.8万', '2天前'],
+      ['yuumaa_novae', '옆에서 웃다가 죽는 줄‖我在旁边笑到不行', '2.4万', '1天前'],
+      ['phajun_novae', '웃지 마, 그 자리에서 사라지고 싶었어‖别笑了，我当场想消失', '5.1万', '1天前'],
+      ['orbis_5th', '이게 진짜 하준이지 ㅋㅋ‖这才是真实的何俊哈哈哈', '1.8万', '20小时前']
     ]
   },
   {
@@ -2867,11 +2990,11 @@ const IG_REELS_POSTS = [
     caption: '东京一日 OOTD。第三套是哥挑的，我抗议过但没用。',
     tags: '#reels #OOTD #东京',
     commentsList: [
-      ['orbis_yuma', '第三套最好看，抗议无效', '5.4万', '3天前'],
-      ['yul_novae', '我的品味什么时候错过。', '4.1万', '2天前'],
-      ['mcy_novae', '错过的次数需要我列出来吗', '2.7万', '2天前'],
-      ['yuumaa_novae', '哥你们别吵了，我在拍片', '3.3万', '2天前'],
-      ['tokyo_orbis', '这家店的咖啡我也喝过！', '1.1万', '1天前']
+      ['orbis_yuma', '3着目が一番いい。抗議は無効‖第三套最好看，抗议无效', '5.4万', '3天前'],
+      ['yul_novae', '내 취향이 언제 틀린 적 있어.‖我的品味什么时候错过。', '4.1万', '2天前'],
+      ['mcy_novae', '틀린 횟수 나열해 드릴까요‖错过的次数需要我列出来吗', '2.7万', '2天前'],
+      ['yuumaa_novae', '형들 싸우지 마요, 저 촬영 중이에요‖哥你们别吵了，我在拍片', '3.3万', '2天前'],
+      ['tokyo_orbis', 'この店のコーヒー、私も飲んだよ！‖这家店的咖啡我也喝过！', '1.1万', '1天前']
     ]
   }
 ];
@@ -2879,18 +3002,17 @@ const IG_REELS_POSTS = [
 const IG_STORIES = [
   { name: '你的快拍', me: true, media: IG_IMG_SELF, seen: false },
   { name: 'novae_offical', media: IG_IMG_GROUP, seen: false },
-  { name: 'dorimi_novae', media: IG_AVATARS.dorimi_novae, seen: false },
-  { name: 'mcy_novae', media: IG_AVATARS.mcy_novae, seen: false },
-  { name: 'phajun_novae', media: IG_AVATARS.phajun_novae, seen: true },
-  { name: 'yuumaa_novae', media: IG_AVATARS.yuumaa_novae, seen: true }
+  { name: 'dorimi_novae', media: IG_REMOTE.dorimi_novae, seen: false },
+  { name: 'mcy_novae', media: IG_REMOTE.mcy_novae, seen: false },
+  { name: 'phajun_novae', media: IG_REMOTE.phajun_novae, seen: true },
+  { name: 'yuumaa_novae', media: IG_REMOTE.yuumaa_novae, seen: true }
 ];
-
 const IG_DMS = [
   { name: 'NOVAE 五人房', text: '道凛：明天的编舞改了吗？', img: IG_IMG_GROUP },
-  { name: 'dorimi_novae', text: '你睡了吗，我还在录音室', img: IG_AVATARS.dorimi_novae },
-  { name: 'mcy_novae', text: '发了张照片', img: IG_AVATARS.mcy_novae },
-  { name: 'phajun_novae', text: '哥，球场那件事别发出去', img: IG_AVATARS.phajun_novae },
-  { name: 'yuumaa_novae', text: '猫在我这儿，明天还你', img: IG_AVATARS.yuumaa_novae }
+  { name: 'dorimi_novae', text: '你睡了吗，我还在录音室', img: IG_REMOTE.dorimi_novae },
+  { name: 'mcy_novae', text: '发了张照片', img: IG_REMOTE.mcy_novae },
+  { name: 'phajun_novae', text: '哥，球场那件事别发出去', img: IG_REMOTE.phajun_novae },
+  { name: 'yuumaa_novae', text: '猫在我这儿，明天还你', img: IG_REMOTE.yuumaa_novae }
 ];
 
 const IG_TABS = [
@@ -3139,30 +3261,54 @@ const REPLIES_KR = {
    05 · SPRINGBOARD + LOCK NOTIFICATIONS
    ============================================================ */
 function renderSpringboard() {
-  const pageOne = `<div class="page"><div class="icon-grid">${PAGE_ONE.map(id => iconHTML(id)).join('')}</div></div>`;
-  const pageTwo = `<div class="page">
-    <div class="widget-grid">
-      <div class="widget w-cal">
-        <h5>日历</h5>
-        <div class="w-date">21</div>
-        <div class="w-day">周三</div>
-        <div class="w-ev"><i></i>10:00 外套试装</div>
-      </div>
-      <div class="widget w-weather">
-        <h5>首尔 · 汉南洞</h5>
-        <div class="w-city"><span>雨</span><span style="opacity:.6">🌧</span></div>
-        <div class="w-temp">12°</div>
-        <div class="w-cond">夜间强降雨</div>
-        <div class="w-mini"><span>最高 14°</span><span>最低 8°</span></div>
-      </div>
-      <div class="widget w-music" style="grid-column:1/-1;min-height:112px">
+  const musicWidget = `<div class="widget w-music" style="grid-column:1/-1;min-height:104px">
         <h5>正在播放</h5>
         <div style="display:flex;gap:10px;align-items:center;margin-top:7px">
           <div class="w-art" style="width:52px;height:52px;margin:0;flex:none"></div>
           <div style="flex:1;min-width:0"><div class="w-song">Rain on Hannam</div><div class="w-artist">崔聿 · BLUE HOUR</div></div>
           <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:12px">▶</div>
         </div>
-      </div>
+      </div>`;
+  const todoWidget = `<div class="widget w-todo">
+        <h5>今天要做</h5>
+        <div class="w-todo-list">
+          <div class="w-todo-item done"><i>✓</i><span>10:00 外套试装</span></div>
+          <div class="w-todo-item"><i></i><span>13:00 录音室 B</span></div>
+          <div class="w-todo-item"><i></i><span>21:00 练习室 · 编舞</span></div>
+        </div>
+      </div>`;
+  const weatherWidget = `<div class="widget w-weather">
+        <h5>首尔 · 汉南洞</h5>
+        <div class="w-city"><span>雨</span><span style="opacity:.6">🌧</span></div>
+        <div class="w-temp">12°</div>
+        <div class="w-cond">夜间强降雨</div>
+        <div class="w-mini"><span>最高 14°</span><span>最低 8°</span></div>
+      </div>`;
+  const calWidget = `<div class="widget w-cal w-cal-wide">
+        <div class="wc-left">
+          <h5>日历</h5>
+          <div class="w-date">21</div>
+          <div class="w-day">周三</div>
+        </div>
+        <div class="wc-right">
+          <div class="w-ev"><i></i>10:00 外套试装</div>
+          <div class="w-ev"><i></i>13:00 录音室 B</div>
+          <div class="w-ev"><i></i>18:00 会议复盘</div>
+          <div class="w-ev"><i></i>21:00 练习室</div>
+        </div>
+      </div>`;
+
+  const pageOne = `<div class="page">
+    <div class="widget-grid" style="margin:0 0 20px;grid-template-columns:1fr 1fr;row-gap:14px">
+      ${musicWidget}
+      ${todoWidget}
+      ${weatherWidget}
+    </div>
+    <div class="icon-grid">${PAGE_ONE.map(id => iconHTML(id)).join('')}</div>
+  </div>`;
+  const pageTwo = `<div class="page">
+    <div class="widget-grid" style="grid-template-columns:1fr;margin:0 0 20px">
+      ${calWidget}
     </div>
     <div class="icon-grid">${PAGE_TWO.map(id => iconHTML(id)).join('')}</div>
   </div>`;
@@ -3172,8 +3318,8 @@ function renderSpringboard() {
 }
 
 const LOCK_NOTIFS = [
-  {app:'kakao', title:'엄마 · 妈妈', text:'내일 많이 추워진대. 패딩 꼭 챙겨. · 明天要大降温，记得穿羽绒服。', time:'2 分钟前'},
-  {app:'instagram', title:'yul_novae', text:'새벽 세 시의 피아노 데모. 아직 안 끝난 곡. · 凌晨三点的钢琴 demo，还没写完的歌。', time:'12 分钟前'},
+  {app:'kakao', title:'엄마 · 妈妈', text:'아직 바빠? 그럼 나 먼저 갈게. · 还在忙吗？那我先回去了。', time:'3 天前'},
+  {app:'instagram', title:'yul_novae', text:'你有一条粉丝@，快来看看吧！', time:'12 分钟前'},
   {app:'weather', title:'날씨 · 天气', text:'밤에 강한 비가 예상됩니다. 우산 챙기세요. · 预计夜间有强降雨，请带伞。', time:'18 分钟前'}
 ];
 function renderLockNotifs() {
@@ -3203,18 +3349,18 @@ function pushLockNotif(appId, title, text) {
 }
 
 const FRESH_NOTIFS = [
-  {app:'bubble',   title:'麦炽野',    text:'哥，练习室灯还亮着，你是不是又没走？'},
-  {app:'bubble',   title:'文道凛',    text:'bridge 改好了，你听一下第三版。'},
-  {app:'kakao',    title:'金道贤 经纪人', text:'明天 8:10 出发，别忘了带护照。'},
-  {app:'kakao',    title:'妈妈',      text:'汤在冰箱第二层，热一下再喝。'},
-  {app:'instagram',title:'orbis_yul', text:'评论了你的帖子：队长今天也在营业吗'},
-  {app:'x',        title:'ORBIS 스트리밍팀', text:'초동 82만 돌파. 다들 수고했어요.'},
+  {app:'bubble',   title:'지윤',      text:'오빠 오늘 무대 진짜 최고였어요 😭'},
+  {app:'instagram',title:'orbis_0612',text:'在评论里提到了你：哥哥看这里！'},
+  {app:'x',        title:'최율 팬덤',  text:'今天的直拍已经 40 万播放了。'},
   {app:'melon',    title:'Melon',     text:'《Blue Hour》实时榜 3 位 → 2 位'},
   {app:'mail',     title:'TIDE 项目组', text:'11/02 彩排 13:30 变更确认。'},
-  {app:'calendar', title:'日程',      text:'15:30 家具配送 · 圣水洞 Acro'},
   {app:'baemin',   title:'外卖民族',  text:'骑手已接单，预计 22 分钟送达。'},
-  {app:'korean',   title:'大韩航空',  text:'KE703 值机开放，座位 2A 已确认。'},
-  {app:'coupang',  title:'Coupang',   text:'Dyson Airwrap 已到小区门口。'}
+  {app:'instagram',title:'novae_forever', text:'你有一条粉丝@，快来看看吧！'},
+  {app:'x',        title:'ORBIS 스트리밍팀', text:'초동 82만 돌파. 다들 수고했어요.'},
+  {app:'calendar', title:'日程',      text:'15:30 家具配送 · 圣水洞 Acro'},
+  {app:'coupang',  title:'Coupang',   text:'Dyson Airwrap 已到小区门口。'},
+  {app:'weather',  title:'天气',      text:'夜间强降雨 · 请带伞。'},
+  {app:'notes',    title:'备忘录',    text:'BLUE HOUR 歌词草稿 · 已更新'}
 ];
 window.scheduleFreshNotifs = function () {
   if (window.__freshStarted) return;
@@ -3227,15 +3373,17 @@ window.scheduleFreshNotifs = function () {
     used.add(idx);
     return FRESH_NOTIFS[idx];
   };
+  let fired = 0;
   const fire = () => {
+    if (fired >= 3) return;
     const n = pick();
     if (!n) return;
+    fired++;
     pushLockNotif(n.app, n.title, n.text);
-    if (typeof toast === 'function') toast(`${(APPS[n.app] || {}).name || ''} · ${n.title}`);
     if (typeof sfx === 'object' && sfx && sfx.notify) { try { sfx.notify(); } catch (e) {} }
-    setTimeout(fire, 65000 + Math.random() * 45000);
+    setTimeout(fire, 105000 + Math.random() * 60000);
   };
-  setTimeout(fire, 26000);
+  setTimeout(fire, 32000);
 };
 
 /* ============================================================
@@ -3264,7 +3412,13 @@ const LIGHT_STATUS = new Set([
 
 function currentKey() { const t = state.stack[state.stack.length - 1]; return t ? t.view + JSON.stringify(t.params || {}) : ''; }
 function saveScroll() { const b = appview.querySelector('.app-body'); if (b) state.scroll[currentKey()] = b.scrollTop; }
-function statusFor(view) { const id = state.currentApp; return LIGHT_STATUS.has(view) ? false : true; }
+function statusFor(view) {
+  if (view === 'msg.chat') {
+    const th = MSG_THREADS[state.msgIdx] || {};
+    return th.kind === 'park' ? false : true;
+  }
+  return LIGHT_STATUS.has(view) ? false : true;
+}
 
 function renderApp() {
   const top = state.stack[state.stack.length - 1];
@@ -3273,6 +3427,8 @@ function renderApp() {
   appview.innerHTML = fn ? fn(top.params || {}) : `<div class="app"><div class="app-head"><div class="head-spacer"></div><div class="grow"><div class="title">页面</div></div><div class="head-spacer"></div></div><div class="app-body"><div class="empty">找不到页面。</div></div></div>`;
   const b = appview.querySelector('.app-body');
   if (b) b.scrollTop = state.scroll[currentKey()] || 0;
+  if (top.view === 'msg.chat') { const mb = document.getElementById('msgBody'); if (mb) mb.scrollTop = mb.scrollHeight; }
+  if (top.view === 'bubble.chat') { const bb = document.getElementById('bubbleBody'); if (bb) bb.scrollTop = bb.scrollHeight; }
   setStatus(statusFor(top.view));
   const pb = $('#melonPlaybar'); if (pb) updatePlaybar();
 }
@@ -3860,18 +4016,21 @@ window.openReelComments = function(postId) {
   
   if (list && post) {
     list.innerHTML = post.commentsList.map(function(c){
+      const raw = c[1] || '';
+      const parts = raw.split('‖');
+      const main = parts[0] || '';
+      const zh = parts[1] || '';
       return `<div style="display:flex; gap:12px; margin-bottom:20px;">
         <div style="width:34px;height:34px;border-radius:50%;overflow:hidden;flex:none;">${igAvatar(c[0], 34)}</div>
         <div style="flex:1; color:#fff;">
-          <div style="font-size:13px; color:#fff;"><b>${c[0]}</b> <span style="color:#aaa; font-size:11px; margin-left:4px;">${c[3] || post.time}</span></div>
-          <div style="font-size:14px; margin-top:4px; line-height:1.4;">${c[1]}</div>
+          <div style="font-size:13px; color:#fff;"><b>${esc(c[0])}</b> <span style="color:#aaa; font-size:11px; margin-left:4px;">${esc(c[3] || post.time)}</span></div>
+          <div style="font-size:14px; margin-top:4px; line-height:1.4;">${esc(main)}${zh ? `<div style="font-size:12px; color:#b3b3b3; margin-top:3px;">${esc(zh)}</div>` : ''}</div>
           <div style="font-size:12px; color:#aaa; margin-top:8px; display:flex; gap:16px;">
-            <span>回复</span><span>查看翻译</span>
+            <span>回复</span><span>${esc(c[2] || '')} 赞</span>
           </div>
         </div>
         <div style="display:flex; flex-direction:column; align-items:center; color:#aaa; font-size:11px; gap:4px; margin-top:4px;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          <span>${c[2] || ''}</span>
         </div>
       </div>`;
     }).join('');
@@ -4220,7 +4379,7 @@ VIEWS['ig.profile'] = () => `<div class="app ig-app" style="background:#fff; hei
   <main style="flex:1; overflow-y:auto; padding-bottom: calc(80px + env(safe-area-inset-bottom));">
     <div style="padding:16px; display:flex; align-items:center; gap:24px;">
       <div style="position:relative; width:80px; height:80px;">
-        <img src="${IG_IMG_SELF}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid #fff;box-sizing:border-box;">
+        <img src="${IG_REMOTE.yul_novae}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid #fff;box-sizing:border-box;">
         <div style="position:absolute; bottom:-2px; right:-2px; width:24px; height:24px; background:#0095f6; border-radius:50%; border:2px solid #fff; display:grid; place-items:center; color:#fff; font-size:16px; font-weight:bold;">+</div>
       </div>
       <div style="display:flex; flex:1; justify-content:space-around; text-align:center;">
@@ -4232,7 +4391,7 @@ VIEWS['ig.profile'] = () => `<div class="app ig-app" style="background:#fff; hei
 
     <div style="padding:0 16px 12px;">
       <div style="font-size:14px; font-weight:600;">崔聿 YUL · NOVAE 队长</div>
-      <div style="font-size:13px; color:#333; margin-top:4px; line-height:1.5;">🎹 主唱 · 作曲<br>BLUE HOUR 10.24 🕰<br>orbis 是我见过最亮的光</div>
+      <div style="font-size:13px; color:#333; margin-top:4px; line-height:1.5;">🎹 作曲<br>BLUE HOUR 10.24 🕰<br>orbis 是我见过最亮的光</div>
       <div style="font-size:13px; color:#00376b; margin-top:6px;">#NOVAE　#orbis　#yul_novae</div>
     </div>
 
@@ -4243,20 +4402,20 @@ VIEWS['ig.profile'] = () => `<div class="app ig-app" style="background:#fff; hei
     </div>
 
     <div style="padding:0 16px 8px; font-size:13px; font-weight:600; display:flex; justify-content:space-between;">
-      <span>发现用户</span> <span style="color:#0095f6; font-weight:500;">显示全部</span>
+      <span>已关注</span> <span style="color:#0095f6; font-weight:500;">显示全部</span>
     </div>
     <div style="display:flex; gap:10px; padding:0 16px 16px; overflow-x:auto;">
       <div style="width:140px; border:1px solid #efefef; border-radius:8px; padding:12px; display:flex; flex-direction:column; align-items:center; flex:none; position:relative;">
         <span style="position:absolute; top:8px; right:8px; color:#8e8e93; font-size:16px;">×</span>
-        <div style="width:60px; height:60px; border-radius:50%; background:#f0f0f0; margin-bottom:8px; overflow:hidden;"><img src="${IG_AVATARS.dorimi_novae}" style="width:100%;height:100%;object-fit:cover;"></div>
+        <div style="width:60px; height:60px; border-radius:50%; background:#f0f0f0; margin-bottom:8px; overflow:hidden;"><img src="${IG_REMOTE.dorimi_novae}" style="width:100%;height:100%;object-fit:cover;"></div>
         <div style="font-size:13px; font-weight:600; margin-bottom:10px; white-space:nowrap;">dorimi_novae</div>
-        <button style="width:100%; height:28px; border:none; background:#0095f6; color:#fff; border-radius:6px; font-size:13px; font-weight:600;">关注</button>
+        <button style="width:100%; height:28px; border:none; background:#efefef; color:#111; border-radius:6px; font-size:13px; font-weight:600;">已关注</button>
       </div>
       <div style="width:140px; border:1px solid #efefef; border-radius:8px; padding:12px; display:flex; flex-direction:column; align-items:center; flex:none; position:relative;">
         <span style="position:absolute; top:8px; right:8px; color:#8e8e93; font-size:16px;">×</span>
-        <div style="width:60px; height:60px; border-radius:50%; background:#f0f0f0; margin-bottom:8px; overflow:hidden;"><img src="${IG_AVATARS.yuumaa_novae}" style="width:100%;height:100%;object-fit:cover;"></div>
+        <div style="width:60px; height:60px; border-radius:50%; background:#f0f0f0; margin-bottom:8px; overflow:hidden;"><img src="${IG_REMOTE.yuumaa_novae}" style="width:100%;height:100%;object-fit:cover;"></div>
         <div style="font-size:13px; font-weight:600; margin-bottom:10px; white-space:nowrap;">yuumaa_novae</div>
-        <button style="width:100%; height:28px; border:none; background:#0095f6; color:#fff; border-radius:6px; font-size:13px; font-weight:600;">关注</button>
+        <button style="width:100%; height:28px; border:none; background:#efefef; color:#111; border-radius:6px; font-size:13px; font-weight:600;">已关注</button>
       </div>
     </div>
 
@@ -4328,10 +4487,10 @@ const X_POSTS = [
     zh:'初动 82 万，还有人说“刷的”，好笑。我们凌晨刷了多少次。没有证据就请安静一点。',
     replies:'1,842', reposts:'2,104', likes:'8.9万', views:'320萬',
     comments:[
-      ['강가 데이터팀', '@kang_data', '82만? 저번 주에 컴백한 우리는 41만이야. 뭘로 82만이 나와 ㅋㅋ', '2.4万', '10分鐘'],
-      ['고양이 보호소', '@nyang_lab', '0.9초의 기적이라는 말 들어봤어? 팬들이 그렇게 한다더라.', '1.1万', '9分鐘'],
-      ['데이터 검증', '@data_check', '초동 기준부터 통일하고 싸우자.', '7,204', '8分鐘'],
-      ['유루 팬', '@yul_jp', '82万は82万でしょ。文句あるなら自分で回して。', '1.8万', '6分鐘']
+      ['강가 데이터팀', '@kang_data', '82만? 저번 주에 컴백한 우리는 41만이야. 뭘로 82만이 나와 ㅋㅋ', '2.4万', '10分鐘', '82 万？我们上周回归才 41 万。你们拿什么凑出 82 万 ㅋㅋ'],
+      ['고양이 보호소', '@nyang_lab', '0.9초의 기적이라는 말 들어봤어? 팬들이 그렇게 한다더라.', '1.1万', '9分鐘', '听过“0.9 秒的奇迹”吗？听说粉丝都这么干。'],
+      ['데이터 검증', '@data_check', '초동 기준부터 통일하고 싸우자.', '7,204', '8分鐘', '先把初动的统计口径统一了再吵吧。'],
+      ['유루 팬', '@yul_jp', '82万は82万でしょ。文句あるなら自分で回して。', '1.8万', '6分鐘', '82 万就是 82 万吧。有意见自己回去刷。']
     ]
   },
   {
@@ -4341,10 +4500,10 @@ const X_POSTS = [
     zh:'奥林匹克公园门票 30 秒售罄。5 分钟后黄牛网站上出现三倍价格。这正常吗。',
     replies:'3,204', reposts:'5,880', likes:'12.8万', views:'560萬',
     comments:[
-      ['멜론 씨앗', '@melon_seed', '잡은 사람 절반은 봇일걸.', '2.2万', '30分鐘'],
-      ['姜家推し', '@kang_fan_01', '너희도 똑같잖아.', '1.4万', '28分鐘'],
-      ['ticket_dog', '@ticket_dog', '실명제+얼굴인식이면 절반은 해결되는데 주최가 싫어하지.', '9,108', '25分鐘'],
-      ['passerby_kr', '@passerby_kr', '僕は取れなかった。それだけ。', '3,204', '20分鐘']
+      ['멜론 씨앗', '@melon_seed', '잡은 사람 절반은 봇일걸.', '2.2万', '30分鐘', '抢到的人一半应该是机器人吧。'],
+      ['姜家推し', '@kang_fan_01', '너희도 똑같잖아.', '1.4万', '28分鐘', '你们不也一样。'],
+      ['ticket_dog', '@ticket_dog', '실명제+얼굴인식이면 절반은 해결되는데 주최가 싫어하지.', '9,108', '25分鐘', '实名制＋人脸识别能解决一半，可主办方不爱这么干。'],
+      ['passerby_kr', '@passerby_kr', '僕は取れなかった。それだけ。', '3,204', '20分鐘', '我没抢到。就这样。']
     ]
   },
   {
@@ -4354,10 +4513,10 @@ const X_POSTS = [
     zh:'今天的舞台直拍上传社区两小时，评论破五千，意见完全对立。',
     replies:'980', reposts:'620', likes:'4.1万', views:'190萬',
     comments:[
-      ['최율 안티', '@yul_anti_hq', '무대 태도 논란, 처음이 아니죠.', '6,204', '55分鐘'],
-      ['only_yul', '@only_yul', '그날 39도였어요. 한 번도 안 빠졌어요.', '1.2万', '52分鐘'],
-      ['ユルママ', '@yul_mom_2', '아픈 애를 캡처로 재단하는 건 너무해.', '8,102', '50分鐘'],
-      ['neutral_k', '@neutral_k', '전체 영상부터 보고 말합시다.', '4,118', '45分鐘']
+      ['최율 안티', '@yul_anti_hq', '무대 태도 논란, 처음이 아니죠.', '6,204', '55分鐘', '舞台态度争议，又不是第一次了。'],
+      ['only_yul', '@only_yul', '그날 39도였어요. 한 번도 안 빠졌어요.', '1.2万', '52分鐘', '那天 39 度。他一个动作都没落下。'],
+      ['ユルママ', '@yul_mom_2', '아픈 애를 캡처로 재단하는 건 너무해.', '8,102', '50分鐘', '拿截图去审判一个生病的孩子，太过分了。'],
+      ['neutral_k', '@neutral_k', '전체 영상부터 보고 말합시다.', '4,118', '45分鐘', '先把完整视频看了再说话吧。']
     ]
   },
   {
@@ -4367,9 +4526,9 @@ const X_POSTS = [
     zh:'今天又做到凌晨三点。求求你好好吃饭吧……我们家孩子为什么这么爱吃苦 🥺',
     replies:'742', reposts:'310', likes:'9.8万', views:'210萬',
     comments:[
-      ['yul_dream', '@yul_dream', '쇄골이 다 보일 만큼 빠졌어요. 마음이 아파요.', '1.5万', '1小時'],
-      ['yul_anti', '@yul_anti', '야윈 건 열심, 남이 야위면 관리 안 함이라니.', '3,204', '1小時'],
-      ['ユルママ2', '@yul_mom_2', '여기서 그 얘기 좀 하지 마요.', '7,410', '1小時']
+      ['yul_dream', '@yul_dream', '쇄골이 다 보일 만큼 빠졌어요. 마음이 아파요.', '1.5万', '1小時', '瘦到锁骨都看得清清楚楚。心里难受。'],
+      ['yul_anti', '@yul_anti', '야윈 건 열심, 남이 야위면 관리 안 함이라니.', '3,204', '1小時', '自己瘦叫努力，别人瘦就是不管理，真行。'],
+      ['ユルママ2', '@yul_mom_2', '여기서 그 얘기 좀 하지 마요.', '7,410', '1小時', '在这儿别扯那个了。']
     ]
   },
   {
@@ -4379,9 +4538,9 @@ const X_POSTS = [
     zh:'昨晚梦见崔聿，他牵着我的手说“谢谢你等我”。现在心跳还没平复。',
     replies:'1,204', reposts:'188', likes:'3.2万', views:'88萬',
     comments:[
-      ['yul_simp', '@yul_simp', '저도 그 꿈 꿨어요. 우리 다 같은 꿈을 꾸나 봐요.', '8,204', '2小時'],
-      ['passerby_kr', '@passerby_kr', '몽녀 문학 또 시작이네.', '2,118', '2小時'],
-      ['yul_mom_2', '@yul_mom_2', '애가 보면 부끄러워하겠다.', '5,204', '1小時']
+      ['yul_simp', '@yul_simp', '저도 그 꿈 꿨어요. 우리 다 같은 꿈을 꾸나 봐요.', '8,204', '2小時', '我也做过那个梦。看来我们做的是同一个梦。'],
+      ['passerby_kr', '@passerby_kr', '몽녀 문학 또 시작이네.', '2,118', '2小時', '梦女文学又开始了。'],
+      ['yul_mom_2', '@yul_mom_2', '애가 보면 부끄러워하겠다.', '5,204', '1小時', '他要是看到会害羞的。']
     ]
   },
   {
@@ -4391,9 +4550,9 @@ const X_POSTS = [
     zh:'今天这身真的绝了。卷起袖子那个小臂线条……没人说我就自己说。',
     replies:'2,104', reposts:'502', likes:'11.2万', views:'240萬',
     comments:[
-      ['yul_dream', '@yul_dream', '서른 장 저장했어요.', '2.6万', '3小時'],
-      ['kang_fan_01', '@kang_fan_01', '이게 실검까지 가는 게 이해 안 됨.', '4,118', '3小時'],
-      ['nyang_lab', '@nyang_lab', '나는 그 고양이가 더 궁금한데.', '6,204', '2小時']
+      ['yul_dream', '@yul_dream', '서른 장 저장했어요.', '2.6万', '3小時', '存了三十张。'],
+      ['kang_fan_01', '@kang_fan_01', '이게 실검까지 가는 게 이해 안 됨.', '4,118', '3小時', '这也能上实时热搜，理解不了。'],
+      ['nyang_lab', '@nyang_lab', '나는 그 고양이가 더 궁금한데.', '6,204', '2小時', '我倒是更好奇那只猫。']
     ]
   },
   {
@@ -4403,8 +4562,8 @@ const X_POSTS = [
     zh:'崔氏家族方面，传出下月董事会议案调整的说法。业界反应是“和往年没什么不同”。',
     replies:'320', reposts:'210', likes:'1.8万', views:'96萬',
     comments:[
-      ['melon_seed', '@melon_seed', '이게 진짜 소料. 앞에 건 팬들 싸움이잖아.', '5,204', '4小時'],
-      ['yul_archive', '@yul_archive', '집안 얘를 걔한테 붙이지 마세요.', '3,118', '4小時']
+      ['melon_seed', '@melon_seed', '이게 진짜 소料. 앞에 건 팬들 싸움이잖아.', '5,204', '4小時', '这才是真料。前面那些只是粉丝吵架。'],
+      ['yul_archive', '@yul_archive', '집안 얘를 걔한테 붙이지 마세요.', '3,118', '4小時', '别把家里的事往他身上贴。']
     ]
   },
   {
@@ -4414,9 +4573,9 @@ const X_POSTS = [
     zh:'今天的机场图整理好发出。4K 原图在主页链接。转载请注明出处。',
     replies:'1,520', reposts:'880', likes:'6.4万', views:'150萬',
     comments:[
-      ['orbis_5th', '@orbis_5th', '역시 갓블루. 화질 미쳤다.', '1.1万', '5小時'],
-      ['kang_side', '@kang_side', '대리 촬영 아니에요?', '2,204', '5小時'],
-      ['bluehour_pic', '@bluehour_pic', '제가 직접 찍었습니다. 감사합니다.', '1.8万', '4小時']
+      ['orbis_5th', '@orbis_5th', '역시 갓블루. 화질 미쳤다.', '1.1万', '5小時', '果然是神蓝。画质绝了。'],
+      ['kang_side', '@kang_side', '대리 촬영 아니에요?', '2,204', '5小時', '不是代拍吧？'],
+      ['bluehour_pic', '@bluehour_pic', '제가 직접 찍었습니다. 감사합니다.', '1.8万', '4小時', '是我本人拍的。谢谢。']
     ]
   }
 ];
@@ -4489,13 +4648,15 @@ function xPost(p, detail) {
         <div class="x-comments" id="xc-${p.id}" style="display:${open ? 'block' : 'none'}">
           ${(p.comments || []).map(c => {
             const n = c[0], h = c[1], t = c[2];
-            const likes = c.length >= 6 ? c[4] : c[3];
-            const tm = c.length >= 6 ? c[5] : c[4];
+            const likes = c[3];
+            const tm = c[4];
+            const zh = c[5] || '';
             return `<div class="x-crow">
               ${xAvatar(h, n, 28)}
               <div class="b">
                 <div class="n">${esc(n)} <span>${esc(h)} · ${esc(tm)}</span></div>
                 <div class="t">${esc(t)}</div>
+                ${zh ? `<div class="x-zh x-zh-sm">${esc(zh)}</div>` : ''}
                 <div class="m">♥ ${esc(likes)} · 回复</div>
               </div>
             </div>`;
@@ -4544,13 +4705,15 @@ VIEWS['x.post'] = (p) => {
       <div class="x-related"><span>相关 ⌄</span><span>查看引用 ›</span></div>
       ${(post.comments || []).map(c => {
         const n = c[0], h = c[1], t = c[2];
-        const likes = c.length >= 6 ? c[4] : c[3];
-        const tm = c.length >= 6 ? c[5] : c[4];
+        const likes = c[3];
+        const tm = c[4];
+        const zh = c[5] || '';
         return `<div class="x-reply">
           ${xAvatar(h, n, 34)}
           <div class="b">
             <div class="n">${esc(n)} <span>${esc(h)} · ${esc(tm)}</span></div>
             <div class="t">${esc(t)}</div>
+            ${zh ? `<div class="x-zh">${esc(zh)}</div>` : ''}
             <div class="m">💬 12 · 🔁 3 · ♥ ${esc(likes)} · 回复</div>
           </div>
         </div>`;
@@ -4954,7 +5117,7 @@ VIEWS['bubble.profile'] = () => `<div class="app bubble-app" style="background:l
 </div>`;
 
 VIEWS['bubble.chat'] = (p) => {
-  const i = (p && p.i) || 0;
+  const i = Number((p && p.i) || 0) || 0;
   const room = BUB_ROOMS[i] || BUB_ROOMS[0];
   const isMain = i === 0;
   const team = isMain ? null : BUB_TEAM_CHAT[room.key];
@@ -4983,7 +5146,7 @@ VIEWS['bubble.chat'] = (p) => {
     <button id="bubSendAll" onclick="bubSendAll()" style="width:100%;height:44px;border:0;border-radius:14px;background:#8b6cf0;color:#fff;font-size:14px;font-weight:800;">发送待发消息</button>
   </div>
 
-  ${(() => { const r = BUB_REPLY[room.key]; if (!r) return '';
+  ${(() => { if (isMain) return ''; const r = BUB_REPLY[room.key]; if (!r) return '';
     return `<div class="bub-opts" id="bubOpts">
       <div class="bub-opts-t"><b>${esc(r.from)}</b> · ${esc(r.prompt.cn)}</div>
       ${r.opts.map((o, oi) => `<button onclick="bubPick('${room.key}', ${oi})">${esc(o.cn)}</button>`).join('')}
@@ -7182,44 +7345,135 @@ VIEWS['fitness.my'] = () => `<div class="app fit-app">
    28 · CALL（电话 · 乙女向）
    ============================================================ */
 const CALL_NODES = {
+  /* 崔聿用队长朴何俊（薄荷）的手机，打回自己丢掉的手机 */
   n1: {lines:[
-    ['여보세요? 혹시… 제 폰을 주우셨어요?', '喂？请问…是您捡到我的手机了吗？']
-  ], choices:[['네, 제가 주웠어요.|是，我捡到了', 'n2'], ['아니에요, 잘못 거셨어요.|不是，你打错了', 'nno']]},
-  n2: {lines:[
-    ['다행이다… 진짜 다행이다.', '太好了…真的太好了。'],
-    ['그게 없으면 오늘 무대를 못 서거든요.', '没有它的话，我今天就上不了台了。']
-  ], choices:[['폰 생김새가 어떻게 되죠?|你手机长什么样？', 'n2q'], ['저 지금 성수동이에요.|我现在就在圣水洞', 'n3']]},
-  n2q: {lines:[
-    ['투명 케이스에… 고양이 스티커가 붙어 있어요.', '透明壳上…贴着一张猫贴纸。'],
-    ['제가 좋아하는 거예요. 웃기죠?', '是我喜欢的东西。很好笑吧？']
-  ], choices:[['그럼 확실히 당신 거네요.|那我确定是你的了', 'n3'], ['어떻게 증명하실 건데요?|你怎么证明？', 'n2q2']]},
-  n2q2: {lines:[
-    ['잠금화면에 고양이 사진이 있어요. 제가 찍은 거.', '锁屏上有一张猫的照片。是我拍的。'],
-    ['…확인해 보실래요?', '…您要不要确认一下？']
-  ], choices:[['네, 봤어요.|嗯，看到了', 'n3'], ['……알겠어요, 한 번 믿을게요.|……行吧，信你一次', 'n3']]},
-  n3: {lines:[
-    ['지금 어디세요? 제가 갈게요.', '您现在在哪？我过去。'],
-    ['10분이면 도착해요. 끊지 말아 주세요.', '十分钟就到。先别挂。']
-  ], choices:[['성수동 서울숲 2길 21이에요.|圣水洞 首尔林 2 街 21', 'n4'], ['급하게 오지 마세요, 여기서 기다릴게요.|你先别急，我在这等你', 'n3b']]},
-  n3b: {lines:[
-    ['…알겠어요. 그럼 제가 찾을게요.', '…好。那我去找您。'],
-    ['뛰면 3분이면 돼요. 가만히 계세요.', '跑的话三分钟就够。您别动。']
-  ], choices:[['네, 안 움직일게요.|好，我不动', 'n4']]},
-  n4: {lines:[
-    ['정말 고마워요. 오늘… 한 번도 안 웃었는데.', '真的很谢谢您。我今天…一次都没笑过。'],
-    ['지금은 웃고 있네요. 이상하죠.', '现在倒是笑了。很奇怪吧。']
-  ], choices:[['조심히 오세요.|路上小心', 'n5'], ['어떻게 제가 당신인 걸 알죠?|你怎么知道是我？', 'n4b']]},
-  n4b: {lines:[
-    ['모르죠. 그냥… 좋은 사람이면 좋겠다고 생각했어요.', '不知道。只是…希望是个好人。'],
-    ['…그런데, 목소리 들으니까 좀 안심이 되네요.', '…不过，听到声音，我安心了一点。']
-  ], choices:[['얼른 가서 받아요.|快去拿吧', 'n5']]},
-  n5: {lines:[
-    ['끊을게요. 조금만 기다려 주세요.', '我挂了。请稍等一下。'],
-    ['꼭… 돌려받을게요.', '一定…要拿回来。']
-  ], end:true},
-  nno: {lines:[
-    ['거짓말… 위치 추적했어요 (ᓀ◞ᓂ..)', '骗人的吧…我定位了哦 (ᓀ◞ᓂ..)'],
-    ['가만히 있으세요. 금방 갈게요.', '别动。我马上到。']
+    ['안녕하세요. 갑자기 전화해서 죄송합니다. 혹시… 제 폰을 주우셨나요? 번호가 여기로 찍혀서요.', '你好，突然打电话抱歉。请问…您捡到我的手机了吗？号码显示在这里。']
+  ], choices:[
+    ['아니에요, 잘못 거셨는데요.|没有啊，你打错了吧？', 'nA1'],
+    ['주웠어요. 그런데 어떻게 당신 폰이라는 걸 증명하죠?|是捡到了，但你怎么证明这是你的？', 'nB1'],
+    ["Sorry, I don't speak Korean.|抱歉，我不会韩语。", 'nC1']
+  ]},
+
+  /* ---------- A · 装傻逗他 ---------- */
+  nA1: {lines:[
+    ['아… 네, 그렇군요. 혹시 근처에 검은색 케이스의 폰이 떨어져 있지는 않았나요? 케이스에 작은 별 스티커가 붙어 있는데.', '啊…这样啊。请问附近有没有掉着一个黑色壳的手机？壳上贴着小星星贴纸。']
+  ], choices:[
+    ['아니요, 바닥은 깨끗하던데요.|没有，地上干干净净的。', 'nA1a'],
+    ['푸흡.|噗。', 'nA1b']
+  ]},
+  nA1a: {lines:[
+    ['그렇다면 제가 번호를 잘못 눌렀나 보네요. 참 이상하죠? 분명 폰 주인은… 발신자 표시제한 말고는 안 걸었다는데.', '那可能是我按错号码了。真奇怪，对吧？明明手机主人说除了隐藏号码没打过别的。', '（他没有挂。背景音里传来打火机开合的清脆声，似乎在耐心等你接招。）']
+  ], choices:[
+    ['그럼 그 친구가 거짓말한 거네요.|那可能你朋友骗了你。', 'nA1a3'],
+    ['됐고, 나한테 있어.|行了行了，在我这。', 'nMeet']
+  ]},
+  nA1a3: {lines:[
+    ['그럴 리가요. 걔는 거짓말하면 티가 엄청 나거든요. (轻笑) 그보다… 혹시 지금 장난치고 계신 거라면, 조금만 빨리 끝내주실 수 있나요? 제가 곧 무대에 올라가야 해서요. 심장이 좀 약해서 놀라면 무대에서 실수할지도 몰라요.', '不可能。他撒谎的话超级明显。（轻笑）比起这个…如果您现在是在开玩笑，能稍微快点结束吗？我马上要上台了。我心脏有点弱，受惊的话可能会在舞台上失误哦。']
+  ], choices:[
+    ['알겠어, 네가 이겼다. 폰 나한테 있어.|好吧，算你狠。手机在我这。', 'nMeet'],
+    ['심장이 약하다고? 그런데 어떻게 이렇게 오래 버텨?|你心脏弱？那怎么还有力气打这么久？', 'nA1a3b']
+  ]},
+  nA1a3b: {lines:[
+    ['아… 들켰네요. 사실 심장은 강한 편인데, 폰이 없으면 오늘 밤을 못 넘길 것 같아서요. 제 폰이 없으면 밤에 잠을 못 자거든요.', '啊…被发现了。其实心脏挺强的，但如果没有手机，今晚可能熬不过去。没有手机我晚上睡不着觉。']
+  ], choices:[
+    ['폰 없으면 잠이 안 와? 게임 중독이네.|没手机睡不着？你网瘾啊？', 'nA1a3b1'],
+    ['지금 어떻게 받을 건데?|那现在怎么拿？', 'nMeet']
+  ]},
+  nA1a3b1: {lines:[
+    ['게임도 하고, 음악도 듣고… 사실 폰보다는 그 안에 있는 사람들이랑 연락하는 게 좋아서요. 오늘 밤에 꼭 연락해야 하는 사람이 있거든요.', '打游戏，听音乐…其实比起手机，我更喜欢和里面的人联系。今晚有个必须联系的人。', '（他说话声音压低了一点，带点若有所指的氛围。）']
+  ], choices:[
+    ['그렇게 중요해? 여자친구?|这么重要？女朋友？', 'nA1a3b1a'],
+    ['됐어, 안 물어볼게. 어디서 돌려줄까?|行了，我不问了。在哪还你？', 'nMeet']
+  ]},
+  nA1a3b1a: {lines:[
+    ['글쎄요. 그건 제가 폰을 찾은 다음에 말해줄 수 있을 것 같네요. 지금은… 옆에 다른 분이 계신가요? 왠지 목소리가 조금 긴장하신 것 같아서.', '怎么说呢。那得等我找回手机之后再告诉您了。现在…您旁边有别人吗？感觉您声音有点紧张。', '（敏锐地捕捉到了你的情绪，开始反向试探。）']
+  ], choices:[
+    ['긴장한 건 너겠지. 말이 이렇게 많아.|是你紧张吧，话这么多。', 'nA1a3b1a1'],
+    ['아니, 혼자야. 너 진짜 다루기 힘들다.|没有，一个人。你这人真难缠。', 'nMeet']
+  ]},
+  nA1a3b1a1: {lines:[
+    ['맞아요, 저 지금 꽤 긴장했어요. (轻轻叹了口气) 제 폰이 남의 손에 있다는 것도 그렇고… 혹시 절 알아보고 장난치시는 건 아닌가 싶어서요. 그런 거라면 조금 속상하니까, 솔직하게 말해주시면 안 될까요?', '对，我现在确实挺紧张的。手机在别人手里，而且…怕您是不是认出我了在逗我玩。如果是那样的话我会有点伤心，能坦白告诉我吗？', '（他把话挑明了。你再绕下去，他大概就真的要挂断，去借别人的手机了。）']
+  ], choices:[
+    ['못 알아봤어. 그냥 장난친 거야. 폰 줄게.|没认出你，就是逗逗你。手机还你。', 'nMeet']
+  ]},
+  nA1b: {lines:[
+    ['…웃으셨죠? 방금.', '…您刚刚，笑了吧？']
+  ], choices:[
+    ['웃었어. 폰 나한테 있어.|笑了。手机在我这。', 'nMeet'],
+    ['아니야, 기침이야.|没有，咳嗽。', 'nA1a']
+  ]},
+
+  /* ---------- B · 谨慎试探 ---------- */
+  nB1: {lines:[
+    ['당연히 확인하셔야죠. 화면 배경은 검은색 고양이 사진일 거예요. 케이스 안쪽에 영수증 한 장이 끼워져 있고요. 맞나요?', '当然得确认。屏幕壁纸应该是一只黑猫的照片。手机壳内侧夹着一张收据。对吗？']
+  ], choices:[
+    ['맞아요, 검은 고양이. 어떻게 돌려드릴까요?|对，是黑猫。怎么还你？', 'nB1a'],
+    ['틀렸어요. 배경은 사람 사진인데.|错了，壁纸是个人。', 'nB1b']
+  ]},
+  nB1b: {lines:[
+    ['…그럴 리가요. 그 폰 배경은 검은 고양이예요. 혹시 지금 다른 폰을 보고 계신 거 아닌가요?', '…不可能吧。那部手机的壁纸就是黑猫。您不会是在看别的手机吧？']
+  ], choices:[
+    ['농담이에요. 어떻게 돌려드릴까요?|开玩笑的。怎么还你？', 'nB1a']
+  ]},
+  nB1a: {lines:[
+    ['다행이네요. (松了一口气) 제가 지금 당장은 무대 준비 때문에 못 가는데, 근처에 제가 아는 조용한 카페가 있어요. 그쪽으로 오시면 제가 커피로 사례하겠습니다.', '太好了。（松了口气）我现在因为准备舞台暂时走不开，附近有家我熟的安静咖啡厅。您来的话我用咖啡答谢您。']
+  ], choices:[
+    ['사양할게요. 주소 주시면 퀵으로 보내주세요.|不用了，你给个地址叫个闪送吧。', 'nB1a3'],
+    ['좋아요, 주소 보내주세요.|行，发地址吧。', 'nMeet']
+  ]},
+  nB1a3: {lines:[
+    ['플래시 배송은 좀 곤란해요. 폰이 파손될 위험도 있고, 솔직히 말씀드리면 제 폰이라서… 꼭 직접 받고 싶거든요. 혹시 많이 불편하실까요? 아니면 제가 근처 지하철역까지라도 나갈게요.', '闪送有点困难。有损坏风险，而且说实话这是我的手机…我想亲自收。您会觉得很不方便吗？或者我走到附近地铁站也行。']
+  ], choices:[
+    ['핸드폰이 목숨보다 중요해?|你这人还挺惜命，手机比命还重要？', 'nB1a3a'],
+    ['그럼 카페가 어디예요?|那咖啡厅在哪？', 'nMeet']
+  ]},
+  nB1a3a: {lines:[
+    ['폰이 제 목숨만큼 중요하진 않지만… 폰 안에 제 목숨 같은 것들이 많이 들어있어서요. 작업물이나, 연락처나. (停顿了一下，语气变轻) 그리고, 요즘 세상에 폰 없으면 하루도 못 사는 사람이 저뿐만은 아닐걸요?', '手机没我命重要，但手机里有像我的命一样的东西。比如作品、联系人。（停顿，语气变轻）而且，这世上没手机活不下去的人，应该不止我一个吧？']
+  ], choices:[
+    ['알겠어, 네 말이 맞다. 주소 보내.|行吧，算你有理。发地址。', 'nMeet'],
+    ['그럼 나한테 춤이라도 춰서 증명해봐.|那你给我跳个舞证明一下？', 'nBdance']
+  ]},
+  nBdance: {lines:[
+    ['(잠깐 웃음) 진짜요? 무대에서 추는 건 자신 있는데… 지금은 좀 그렇네요. 폰부터 받고 추면 안 될까요?', '（笑了一下）真的？舞台上跳我很有自信…但现在有点那个。先让我拿回手机再跳行吗？', '（电话那头传来很轻的一声笑，比刚才任何一句都真实。）']
+  ], choices:[
+    ['농담이야. 성수동에서 보자.|开玩笑的。圣水洞见。', 'nMeet']
+  ]},
+
+  /* ---------- C · 语言不通 ---------- */
+  nC1: {lines:[
+    ['Oh, sorry. I was asking if you found a phone. This is my friend’s number, the owner is busy right now.', '哦，抱歉。我是问您是不是捡到手机了。这是我朋友的号码，主人现在很忙。']
+  ], choices:[
+    ["Yes, it's a black iPhone.|是的，是一部黑色 iPhone。", 'nC1a'],
+    ['听不懂，你说中文。|', 'nC1b']
+  ]},
+  nC1b: {lines:[
+    ['……中文？好，我说中文。请问…我的手机，在您那儿吗？', '', '（他换成有点生硬、但很轻的中文，一字一句说得很认真。）']
+  ], choices:[
+    ['是。黑色的 iPhone，在我这。|', 'nMeet']
+  ]},
+  nC1a: {lines:[
+    ['Thank god. Really, thank you. Are you in Seoul? I can come to you.', '谢天谢地。真的谢谢你。你在首尔吗？我可以去找你。']
+  ], choices:[
+    ['No, just tell me where to leave it.|不，告诉我放哪就行。', 'nC1a3'],
+    ["I'm near Seoul Forest.|我在首尔林附近。", 'nMeet']
+  ]},
+  nC1a3: {lines:[
+    ['I’d rather pick it up myself. It has a lot of private stuff. But I promise I won’t take much of your time. Just 5 minutes at a cafe?', '我更想自己拿。里面有挺多私人物品。但我保证不耽误您太多时间。在咖啡厅 5 分钟？']
+  ], choices:[
+    ['Fine. Send location.|行，发定位。', 'nMeet'],
+    ['Are you a celebrity or something?|你是名人还是啥？', 'nC1a3b']
+  ]},
+  nC1a3b: {lines:[
+    ['(轻笑) Maybe? But right now, I’m just a guy who really needs his phone back. So, cafe?', '（轻笑）也许吧？但现在，我只是个急需拿回手机的人。所以，咖啡厅？']
+  ], choices:[
+    ['Okay. Send it.|好。发吧。', 'nMeet']
+  ]},
+
+  /* ---------- 结算：约在纛岛站 ---------- */
+  nMeet: {lines:[
+    ['고맙습니다. 성수동 쪽인데… 혹시 지금 어디 계세요? 제가 택시 타고 갈게요.', '谢谢。在圣水洞这边…请问您现在在哪？我打车过去。'],
+    ['아, 지하철이면 2호선 뚝섬역 3번 출구에서 뵐까요? 거기가 좀 덜 눈에 띄어서요.', '啊，如果坐地铁的话，在 2 号线纛岛站 3 号出口见怎么样？那里比较不显眼。'],
+    ['…그럼 이따 봬요. 정말 고마웠어요.', '…那待会见。真的谢谢您。']
   ], end:true}
 };
 
@@ -7242,7 +7496,11 @@ window.callReject = function () { state.callStage = 'vm'; renderApp(); };
 window.callPick = function (next, label) {
   const t = document.getElementById('callThread');
   const parts = label.split('|');
-  if (t) { t.insertAdjacentHTML('beforeend', `<div class="call-msg me">${esc(parts[1] || parts[0])}</div>`); callScroll(); }
+  const kr = parts[0] || '', cn = parts[1] || '';
+  if (t) {
+    t.insertAdjacentHTML('beforeend', `<div class="call-msg me">${esc(kr)}${cn ? `<span class="me-cn">${esc(cn)}</span>` : ''}</div>`);
+    callScroll();
+  }
   const box = document.getElementById('callChoices');
   if (box) { box.innerHTML = ''; box.classList.remove('show'); }
   state.callNode = next;
@@ -7266,15 +7524,18 @@ window.callMount = function () {
       if (box && node.choices) {
         box.innerHTML = node.choices.map(([label, next]) => { const [kr, cn] = label.split('|'); return `<button onclick="callPick('${next}', '${label.replace(/'/g, "\\'")}')"><span class="ck">${esc(kr)}</span><span class="cc">${esc(cn)}</span></button>`; }).join('');
         box.classList.add('show');
+        const foot = box.parentNode;
+        t.style.paddingBottom = ((foot ? foot.offsetHeight : 200) + 26) + 'px';
         callScroll();
       }
       return;
     }
-    const [kr, cn] = node.lines[i++];
+    const [kr, cn, note] = node.lines[i++];
     t.insertAdjacentHTML('beforeend', `<div class="call-msg them"><div class="av">${avatar('崔聿', 28)}</div><div class="bub"><div class="kr"></div><div class="cn"></div></div></div>`);
     const last = t.lastElementChild;
     const krEl = last.querySelector('.kr'), cnEl = last.querySelector('.cn');
     let k = 0;
+    const speed = Math.max(16, Math.min(70, Math.round(2300 / Math.max(12, kr.length))));
     const iv = setInterval(() => {
       k++;
       krEl.textContent = kr.slice(0, k);
@@ -7282,12 +7543,13 @@ window.callMount = function () {
       if (k >= kr.length) {
         clearInterval(iv);
         krEl.classList.add('done');
-        cnEl.textContent = cn;
+        cnEl.textContent = cn || '';
         cnEl.classList.add('show');
+        if (note) cnEl.insertAdjacentHTML('afterend', `<div class="call-note">${esc(note)}</div>`);
         callScroll();
-        setTimeout(step, 620);
+        setTimeout(step, note ? 980 : 620);
       }
-    }, 105);
+    }, speed);
   };
   step();
 };
@@ -7659,15 +7921,232 @@ VIEWS['phone.voicemail'] = () => `<div class="app phone-app">${appHead('语音�
    27 · MESSAGES（短信 / 通知）
    ============================================================ */
 const MSG_THREADS = [
-  {name:'金道贤 经纪人', pre:'明天 9 点 20 分在车旁等。', time:'昨天 23:18', unread:1, msgs:[['them','明天 9 点 20 分我在车旁等。','23:16'],['me','好。行李不多。','23:17'],['them','10 点外套试装，13 点录音室 B。','23:18']]},
-  {name:'妈妈', pre:'儿子，带件羽绒服。', time:'昨天 23:42', unread:2, msgs:[['them','儿子吃饭了吗？','22:58'],['me','嗯，在工作室吃了','23:01'],['them','明天要大降温。记得带羽绒服。','23:42']]},
-  {name:'朴何俊', pre:'编舞修改版发你了。', time:'22:54', unread:0, msgs:[['them','第二段编舞修改版发你了。','22:51'],['me','正在看','22:52'],['them','副歌那段我加了一个转身。','22:54']]},
-  {name:'韩素娜', pre:'钥匙放门口了。', time:'20:11', unread:0, msgs:[['them','钥匙放门口了。','19:58'],['me','嗯，路上小心','20:01']]},
-  {name:'TIDE 项目组', pre:'[公告] 11/02 见面会彩排 14:00 → 13:30', time:'18:30', unread:0, msgs:[['them','[公告] 11/02 见面会彩排改为 13:30。','18:30'],['me','收到。','18:31']]},
-  {name:'新韩卡', pre:'10/22 15:35 结算 3,900,000 韩元', time:'15:36', unread:0, msgs:[['them','[新韩卡] 10/22 15:35 结算 3,900,000 韩元。','15:36']]},
-  {name:'Coupang', pre:'订单已发货，预计明天上午送达。', time:'14:22', unread:0, msgs:[['them','[Coupang] 订单已发货，预计明天上午送达。','14:22']]},
-  {name:'首尔大学 教务', pre:'期中考试 10/28 09:00 经营统计学。', time:'10月21日', unread:0, msgs:[['them','[首尔大] 期中考试 10/28 09:00 经营统计学 · 302 馆。','10:02']]},
-  {name:'+82 10-4482-****', pre:'验证码 681298', time:'10月19日', unread:0, msgs:[['them','[认证] 验证码 681298，请勿告知他人。','19:40']]}
+  /* ---------------- 对话 ---------------- */
+  {
+    name:'朴哲', kind:'park', g:'c', time:'昨天 23:18', unread:1, sub:'iMessage',
+    colors:['#9cc6d8','#2e5568'], initial:'哲',
+    pre:'Never mind, guess you’re busy. · 算了，估计忙吧。'
+  },
+  {
+    name:'敏宰', kind:'im', g:'c', time:'今天 09:12', unread:2, sub:'iMessage',
+    colors:['#8ab6f0','#28568f'], initial:'敏',
+    pre:'좋아요. 줌 링크 다시 보낼게요. · 好。我再发 Zoom 链接。',
+    msgs:[
+      {r:'date', a:'今天 09:02'},
+      {r:'them', a:'최율님, 조별 PPT 목요일 6시까지 업로드 맞죠?', b:'崔聿，小组 PPT 周四 6 点前上传对吧？'},
+      {r:'me',   a:'네. 제 파트 재무비율은 오늘 밤까지 올릴게요.', b:'是。我负责的财务比率今晚前上传。'},
+      {r:'them', a:'교수님이 출처 표시 꼭 하래요. 2025년 자료도?', b:'教授说出处必须标。2025 年资料也要？'},
+      {r:'me',   a:'네, 각주로 넣겠습니다. 발표 순서는 제가 세 번째였죠?', b:'是，我用脚注。发表顺序我是第三个吧？'},
+      {r:'them', a:'네. 혹시 리허설 내일 9시 괜찮으세요?', b:'是。明天 9 点彩排可以吗？'},
+      {r:'me',   a:'9시는 수업 전이라 괜찮아요. 20분만 하면 됩니다.', b:'9 点上课前可以。20 分钟就行。'},
+      {r:'them', a:'좋아요. 줌 링크 다시 보낼게요.', b:'好。我再发 Zoom 链接。'},
+      {r:'me',   a:'감사합니다. 늦지 않게 들어갈게요.', b:'谢谢。我会准时进。'}
+    ]
+  },
+  {
+    name:'김 사장 · 乐器维修', kind:'im', g:'c', time:'10月18日 15:22', sub:'iMessage',
+    colors:['#d6b37a','#8a5b24'], initial:'김',
+    pre:'네, 그대로 케이스에 넣어뒀습니다. · 是，原样放回琴盒了。',
+    msgs:[
+      {r:'date', a:'2026年10月18日 15:22'},
+      {r:'them', a:'최율 씨, 맡기신 바이올린 브리지 교체랑 활 리헤어 끝났습니다. 오늘 7시 전에 찾아가실 수 있어요?', b:'崔聿，您寄存的小提琴琴桥更换和弓毛重装已完成。今天 7 点前能来取吗？'},
+      {r:'me',   a:'네, 감사합니다. 오늘 연습이 6시에 끝나서 6시 40분쯤 갈게요. 수리비는 카드로 결제할게요.', b:'好，谢谢。今天排练 6 点结束，我 6 点 40 左右去。维修费用卡支付。'},
+      {r:'them', a:'네. 그런데 브리지 높이를 조금 낮췄는데 괜찮으세요? 연주감 확인해 보시고요.', b:'好。不过琴桥高度稍微降低了，可以吗？请确认演奏感。'},
+      {r:'me',   a:'네, 그게 좋을 것 같아요. 요즘 손목이 조금 아파서요. 너무 낮으면 다시 조정할 수 있죠?', b:'好，那样应该更好。最近手腕有点疼。如果太低可以再调吧？'},
+      {r:'them', a:'물론이죠. 일주일 정도 써보시고 말씀 주세요.', b:'当然。用一周左右再告诉我。'},
+      {r:'me',   a:'알겠습니다. 혹시 케이스 안에 있던 천은 따로 보관해 주셨나요?', b:'明白。请问琴盒里的布您单独保管了吗？'},
+      {r:'them', a:'네, 그대로 케이스에 넣어뒀습니다.', b:'是，原样放回琴盒了。'},
+      {r:'me',   a:'감사합니다. 곧 뵙겠습니다.', b:'谢谢。一会儿见。'}
+    ]
+  },
+  {
+    name:'TIDE 项目组', kind:'im', g:'c', time:'10月21日 18:30', sub:'iMessage · 群组',
+    colors:['#c9a4d8','#6a3b80'], initial:'T',
+    pre:'[公告] 11/02 见面会彩排 14:00 → 13:30',
+    msgs:[
+      {r:'date', a:'2026年10月21日 18:30'},
+      {r:'them', a:'[공지] 11/02 팬미팅 리허설이 14:00 → 13:30 으로 변경되었습니다.', b:'[公告] 11/02 见面会彩排改为 13:30。'},
+      {r:'me',   a:'확인했습니다.', b:'收到。'}
+    ]
+  },
+
+  /* ---------------- 短信与通知 ---------------- */
+  {
+    name:'인터파크 티켓', kind:'im', g:'s', time:'10/23 11:20', sub:'短信 · 服务号',
+    pre:'预订确认：音乐剧《汉密尔顿》11/02 19:30，1层 A 排 12 号。',
+    msgs:[
+      {r:'date', a:'2026-10-23 11:20'},
+      {r:'them', a:'예매 확인: 뮤지컬 <해밀턴> 11/02 19:30, 1층 A열 12번.', b:'预订确认：音乐剧《汉密尔顿》11/02 19:30，1 层 A 排 12 号。'}
+    ]
+  },
+  {
+    name:'국세청', kind:'im', g:'s', time:'10/22 23:14', sub:'短信 · 未存号码',
+    pre:'[国税厅] 综合所得税退税 312,000 韩元。申请截止 10/25。',
+    msgs:[
+      {r:'date', a:'2026-10-22 23:14'},
+      {r:'them', a:'[국세청] 종합소득세 환급금 312,000원. 신청 마감 10/25 [링크]', b:'[国税厅] 综合所得税退税 312,000 韩元。申请截止 10/25[链接]。'}
+    ]
+  },
+  {
+    name:'KB카드', kind:'im', g:'s', time:'10/22 22:48', sub:'短信 · 未存号码',
+    pre:'[KB卡] 卡款预计结算 1,240,000 韩元。结算日 10/25。',
+    msgs:[
+      {r:'date', a:'2026-10-22 22:48'},
+      {r:'them', a:'[KB카드] 카드대금 결제 예정 1,240,000원. 결제일 10/25. 본인 아니면 [링크]', b:'[KB卡] 卡款预计结算 1,240,000 韩元。结算日 10/25。若非本人请[链接]。'}
+    ]
+  },
+  {
+    name:'피부과 광고', kind:'im', g:'s', time:'10/22 19:32', sub:'短信 · 未存号码',
+    pre:'[广告] 皮肤科激光 10 月特价。预约咨询。',
+    msgs:[
+      {r:'date', a:'2026-10-22 19:32'},
+      {r:'them', a:'[광고] 피부과 레이저 10월 특가. 예약 문의 [링크]', b:'[广告] 皮肤科激光 10 月特价。预约咨询[链接]。'}
+    ]
+  },
+  {
+    name:'新韩卡', kind:'im', g:'s', time:'10/22 15:36', sub:'短信 · 服务号',
+    pre:'[新韩卡] 10/22 15:35 结算 3,900,000 韩元。',
+    msgs:[
+      {r:'date', a:'2026-10-22 15:36'},
+      {r:'them', a:'[신한카드] 10/22 15:35 3,900,000원 결제 승인. 잔여 한도 1,240,000원.', b:'[新韩卡] 10/22 15:35 结算 3,900,000 韩元。'}
+    ]
+  },
+  {
+    name:'Coupang', kind:'im', g:'s', time:'10/22 14:22', sub:'短信 · 服务号',
+    pre:'订单已发货，预计明天上午送达。',
+    msgs:[
+      {r:'date', a:'2026-10-22 14:22'},
+      {r:'them', a:'[Coupang] 주문하신 상품이 발송되었습니다. 내일 오전 도착 예정.', b:'订单已发货，预计明天上午送达。'}
+    ]
+  },
+  {
+    name:'首尔大学 教务', kind:'im', g:'s', time:'10月21日', sub:'短信 · 首尔大',
+    pre:'期中考试 10/28 09:00 经营统计学 · 302 馆。',
+    msgs:[
+      {r:'date', a:'2026-10-21 10:02'},
+      {r:'them', a:'[서울대] 중간고사 10/28 09:00 경영통계학 · 302관. 신분증 지참.', b:'期中考试 10/28 09:00 经营统计学 · 302 馆。'}
+    ]
+  },
+  {
+    name:'해외 발신', kind:'im', g:'s', time:'10/21 12:40', sub:'短信 · 未存号码',
+    pre:'恭喜！您赢得 1000 美元礼品卡。立即领取。',
+    msgs:[
+      {r:'date', a:'2026-10-21 12:40'},
+      {r:'them', a:'Congratulations! You’ve won a $1,000 gift card. Claim now: [link]', b:'恭喜！您赢得 1000 美元礼品卡。立即领取：[链接]。'}
+    ]
+  },
+  {
+    name:'서울치과', kind:'im', g:'s', time:'10/20 14:30', sub:'短信 · 服务号',
+    pre:'预约确认：10/27 16:20 洗牙。请提前 10 分钟到达。',
+    msgs:[
+      {r:'date', a:'2026-10-20 14:30'},
+      {r:'them', a:'예약 확인: 10/27 16:20 스케일링. 10분 전 도착 부탁드립니다.', b:'预约确认：10/27 16:20 洗牙。请提前 10 分钟到达。'}
+    ]
+  },
+  {
+    name:'Yes24 티켓', kind:'im', g:'s', time:'10/20 13:30', sub:'短信 · 服务号',
+    pre:'《汉密尔顿》追加票开售通知：10/20 20:00。',
+    msgs:[
+      {r:'date', a:'2026-10-20 13:30'},
+      {r:'them', a:'<해밀턴> 추가 티켓 오픈 안내: 10/20 20:00.', b:'《汉密尔顿》追加票开售通知：10/20 20:00。'}
+    ]
+  },
+  {
+    name:'SKT', kind:'im', g:'s', time:'10/20 11:02', sub:'短信 · 服务号',
+    pre:'10 月费用通知：48,200 韩元。自动扣款预定日 10/25。',
+    msgs:[
+      {r:'date', a:'2026-10-20 11:02'},
+      {r:'them', a:'10월 요금 안내: 48,200원. 자동이체 예정일 10/25.', b:'10 月费用通知：48,200 韩元。自动扣款预定日 10/25。'}
+    ]
+  },
+  {
+    name:'Steam', kind:'im', g:'s', time:'10/19 23:47', sub:'短信 · 服务号',
+    pre:'愿望单商品正在打折：《Indie Bundle》60% off。',
+    msgs:[
+      {r:'date', a:'2026-10-19 23:47'},
+      {r:'them', a:'관심 목록 상품이 할인 중입니다: <Indie Bundle> 60% off.', b:'愿望单商品正在打折：《Indie Bundle》60% off。'}
+    ]
+  },
+  {
+    name:'+82 10-4482-****', kind:'im', g:'s', time:'10/19 19:40', sub:'短信 · 未存号码', initial:'8',
+    pre:'验证码 681298',
+    msgs:[
+      {r:'date', a:'2026-10-19 19:40'},
+      {r:'them', a:'[인증] 인증번호 681298. 타인에게 알리지 마세요.', b:'[认证] 验证码 681298，请勿告知他人。'}
+    ]
+  },
+  {
+    name:'서울대 중앙도서관', kind:'im', g:'s', time:'10/19 09:20', sub:'短信 · 首尔大',
+    pre:'借阅图书归还日为 10/24。逾期将限制借阅。',
+    msgs:[
+      {r:'date', a:'2026-10-19 09:20'},
+      {r:'them', a:'대출 도서 반납일이 10/24입니다. 연체 시 대출이 제한됩니다.', b:'借阅图书归还日为 10/24。逾期将限制借阅。'}
+    ]
+  },
+  {
+    name:'인터파크 티켓', kind:'im', g:'s', time:'10/18 17:35', sub:'短信 · 服务号',
+    pre:'《汉密尔顿》场次部分追加座位已释放。',
+    msgs:[
+      {r:'date', a:'2026-10-18 17:35'},
+      {r:'them', a:'해밀턴 회차 추가 좌석이 일부 해제되었습니다.', b:'《汉密尔顿》场次部分追加座位已释放。'}
+    ]
+  },
+  {
+    name:'교보문고', kind:'im', g:'s', time:'10/17 08:50', sub:'短信 · 服务号',
+    pre:'订购商品已准备好。可在江南店 2 层领取。',
+    msgs:[
+      {r:'date', a:'2026-10-17 08:50'},
+      {r:'them', a:'주문 상품이 준비되었습니다. 강남점 2층에서 수령 가능합니다.', b:'订购商品已准备好。可在江南店 2 层领取。'}
+    ]
+  },
+  {
+    name:'한국공항철도', kind:'im', g:'s', time:'10/16 13:12', sub:'短信 · 服务号',
+    pre:'AREX 乘车券支付完成。首尔站 → 仁川机场，10/24 07:20。',
+    msgs:[
+      {r:'date', a:'2026-10-16 13:12'},
+      {r:'them', a:'AREX 승차권 결제 완료. 서울역 → 인천공항, 10/24 07:20.', b:'AREX 乘车券支付完成。首尔站 → 仁川机场，10/24 07:20。'}
+    ]
+  },
+  {
+    name:'멜론', kind:'im', g:'s', time:'10/15 19:00', sub:'短信 · 服务号',
+    pre:'使用券支付已完成。下次扣款日 11/15。',
+    msgs:[
+      {r:'date', a:'2026-10-15 19:00'},
+      {r:'them', a:'이용권 결제가 완료되었습니다. 다음 결제일 11/15.', b:'使用券支付已完成。下次扣款日 11/15。'}
+    ]
+  },
+  {
+    name:'우체국', kind:'im', g:'s', time:'10/14 10:30', sub:'短信 · 服务号',
+    pre:'挂号邮件已到达。保管期限 7 天。',
+    msgs:[
+      {r:'date', a:'2026-10-14 10:30'},
+      {r:'them', a:'등기우편이 도착했습니다. 보관 기간 7일.', b:'挂号邮件已到达。保管期限 7 天。'}
+    ]
+  },
+  {
+    name:'Steam 社区', kind:'im', g:'s', time:'10/13 21:18', sub:'短信 · 服务号',
+    pre:'新好友请求 1 件。请在个人资料中确认。',
+    msgs:[
+      {r:'date', a:'2026-10-13 21:18'},
+      {r:'them', a:'새 친구 요청 1건. 프로필에서 확인하세요.', b:'新好友请求 1 件。请在个人资料中确认。'}
+    ]
+  },
+  {
+    name:'서울대 학사', kind:'im', g:'s', time:'10/12 15:44', sub:'短信 · 首尔大',
+    pre:'毕业条件查询结果：缺少专业必修 1 门。',
+    msgs:[
+      {r:'date', a:'2026-10-12 15:44'},
+      {r:'them', a:'졸업요건 조회 결과, 전공 필수 1과목이 부족합니다.', b:'毕业条件查询结果：缺少专业必修 1 门。'}
+    ]
+  },
+  {
+    name:'올리브영', kind:'im', g:'s', time:'10/11 12:00', sub:'短信 · 服务号',
+    pre:'您订购的商品已包装完成。今天下班前可领取。',
+    msgs:[
+      {r:'date', a:'2026-10-11 12:00'},
+      {r:'them', a:'주문하신 상품이 포장 완료되었습니다. 오늘 퇴근 전 수령 가능합니다.', b:'您订购的商品已包装完成。今天下班前可领取。'}
+    ]
+  }
 ];
 const NOTIFS = [
   {app:'外卖民族', icon:'🛵', color:'#2ac1bc', time:'今天 16:59', title:'骑手已接单', body:'预计 25 分钟后送达 · 圣水洞 Acro Seoul Forest', unread:true},
@@ -7686,25 +8165,78 @@ function msgTabs(active) {
   </div>`;
 }
 
-VIEWS['msg.list'] = () => `<div class="app sms-app">
+/* ---------- iMessage 气泡 / 头部 ---------- */
+function imBubble(x) {
+  if (x.r === 'date') return `<div class="msg-time">${esc(x.a || x.text || '')}</div>`;
+  if (x.r === 'sys')  return `<div class="im-sys">${esc(x.a || x.text || '')}</div>`;
+  const cls = x.r === 'me' ? 'me' : 'them';
+  if (x.img) {
+    return `<div class="imsg ${cls} imimg"><div class="im-photo"><span>SEOUL<br>10 / 18</span><img src="${esc(x.img)}" alt="photo" onerror="this.parentNode.classList.add('fail');this.remove()"></div></div>`;
+  }
+  return `<div class="imsg ${cls}">${esc(x.a || '')}${x.b ? `<span class="im-tr">${esc(x.b)}</span>` : ''}</div>`;
+}
+function imHead(m, dark) {
+  return `<header class="im-head ${dark ? 'dark' : ''}">
+    <button class="im-ic" data-action="back" aria-label="返回"><svg viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></svg></button>
+    <div class="im-id">
+      ${avatar(m.name, 34, {colors: m.colors, initial: m.initial})}
+      <div class="tx">
+        <div class="nm">${esc(m.name)}<i>›</i></div>
+        <div class="sub">${esc(m.sub || 'iMessage')}${m.time ? ' · ' + esc(m.time) : ''}</div>
+      </div>
+    </div>
+    <button class="im-ic" data-action="noop" aria-label="FaceTime"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="12" height="10" rx="3"/><path d="M15 11l6-3v8l-6-3z"/></svg></button>
+  </header>`;
+}
+function imRoom(m) {
+  const list = m.msgs || [];
+  let lastMe = -1;
+  list.forEach((x, i) => { if (x.r === 'me') lastMe = i; });
+  const body = list.map((x, i) => imBubble(x) + (i === lastMe ? '<i class="im-sent">已送达</i>' : '')).join('');
+  return `<div class="app im-app">
+    ${imHead(m, false)}
+    <main class="app-body im-body" id="msgBody">
+      <div class="im-thread">${body}</div>
+      <div class="im-sys">${esc(m.note || 'iMessage · 端到端加密')}</div>
+    </main>
+    <div class="msg-input">
+      <button class="im-plus" data-action="noop" aria-label="更多">＋</button>
+      <input id="msgInput" placeholder="iMessage" data-enter="msg.send" />
+      <button class="send" data-action="msg.send" aria-label="发送">↑</button>
+    </div>
+  </div>`;
+}
+
+VIEWS['msg.list'] = () => {
+  const rows = MSG_THREADS.map((m, i) => [m, i]);
+  const conv = rows.filter(([m]) => m.g === 'c');
+  const svc  = rows.filter(([m]) => m.g !== 'c');
+  return `<div class="app sms-app">
   <header class="sms-head">
     <div class="tt">消息</div>
     <div class="ic"><button data-action="noop">${xIcon(SVG_UI.search, 20)}</button><button data-action="noop">${xIcon(SVG_UI.more, 20)}</button></div>
   </header>
-  <main class="app-body" style="padding-bottom:110px">
-    ${MSG_THREADS.map((m, i) => `<div class="sms-row" data-action="msg.open" data-i="${i}">
-      <div class="av">${avatar(m.name, 46, {initial: m.name === '妈妈' ? '妈' : m.name.replace(/[^\\u4e00-\\u9fa5A-Za-z]/g, '').slice(0, 1) || '#'})}</div>
-      <div class="b">
-        <div class="n">${esc(m.name)}<span>${esc(m.time)}</span></div>
-        <div class="p ${m.unread ? 'un' : ''}">${esc(m.pre)}</div>
-      </div>
-      ${m.unread ? `<span class="badge">${m.unread}</span>` : ''}
-    </div>`).join('')}
+  <main class="app-body" style="padding-bottom:112px">
+    <div class="sms-sec">对话 · Conversations</div>
+    ${conv.map(([m, i]) => smsRow(m, i)).join('')}
+    <div class="sms-sec">短信与通知 · Services</div>
+    ${svc.map(([m, i]) => smsRow(m, i)).join('')}
     <div style="height:14px"></div>
   </main>
   <button class="sms-fab" onclick="toast('写新消息（演示）')">＋</button>
   ${msgTabs(0)}
 </div>`;
+};
+function smsRow(m, i) {
+  return `<div class="sms-row" data-action="msg.open" data-i="${i}">
+    <div class="av">${avatar(m.name, 48, {colors: m.colors, initial: m.initial})}</div>
+    <div class="b">
+      <div class="n">${esc(m.name)}<span>${esc(m.time)}</span></div>
+      <div class="p ${m.unread ? 'un' : ''}">${esc(m.pre)}</div>
+    </div>
+    ${m.unread ? `<span class="badge">${m.unread}</span>` : ''}
+  </div>`;
+}
 
 VIEWS['msg.notif'] = () => `<div class="app sms-app">
   <header class="sms-head"><div class="tt">通知</div><div class="ic"><button data-action="noop">${xIcon(SVG_UI.search, 20)}</button><button data-action="noop">${xIcon(SVG_UI.more, 20)}</button></div></header>
@@ -7720,13 +8252,166 @@ VIEWS['msg.notif'] = () => `<div class="app sms-app">
   ${msgTabs(1)}
 </div>`;
 
-VIEWS['msg.chat'] = (p) => {
-  const m = MSG_THREADS[p.i || 0]; m.unread = 0;
-  state.msgIdx = p.i || 0;
-  return `<div class="app msg-app msg-room">${appHead(m.name, {right:headIcon(SVG_UI.phone, 'msg.call')})}
-    <main class="app-body" id="msgBody"><div class="msg-time">今天晚上 11:18</div>${m.msgs.map(([r,t,time]) => `<div class="imsg ${r==='me'?'me':'them'}">${esc(t)}</div><div style="font-size:8.5px;color:#b0b0b5;padding:0 18px;text-align:${r==='me'?'right':'left'}">${time}</div>`).join('')}</main>
-    <div class="msg-input"><input id="msgInput" placeholder="iMessage" data-enter="msg.send" /><button class="send" data-action="msg.send">↑</button></div>
+/* ---------- 朴哲 · iMessage 玻璃泡（参考图3） ---------- */
+const PARK_MSGS = [
+  {r:'date', a:'2026年10月18日'},
+  {r:'them', a:"It’s super overcast in Qingdao today!", b:'今天青岛是个大阴天！'},
+  {r:'them', a:'So cold!', b:'好冷！'},
+  {r:'them', a:'How’s Seoul?', b:'首尔怎么样？'},
+  {r:'me', img:'https://i.postimg.cc/fT9tvqvp/image.png'},
+  {r:'me', a:'pretty nice.', b:'还不错。'},
+  {r:'me', a:'Come see for yourself?', b:'你自己来首尔看看？'},
+  {r:'them', a:'Emmm, forget it—I’ve never even been out of Qingdao.', b:'emmm，没出过青岛算了。'},
+  {r:'date', a:'2026年10月18日，晚'},
+  {r:'them', a:'Come farm in Stardew Valley—we’re just missing you.', b:'来星露谷种地，就差你一个了。'},
+  {r:'me', a:'I’ve got plans today, so I’m not going.', b:'我今天有活动，不去了。'},
+  {r:'them', a:'omg,sad.', b:'欧克。'},
+  {r:'date', a:'2026年10月19日'},
+  {r:'them', a:'Little bro, I saw your ad on my way home from work today. You’re blowing up—a bunch of girls were taking photos/checking in.', b:'老弟，今天下班路上看见了你的广告，你好火，一群小姑娘在打卡。'},
+  {r:'me', a:'Only kinda popular. Wanna play Submarine today? I’m in the mood for that.', b:'一般般火，今天玩潜艇吗？想玩这个了。'},
+  {r:'them', a:'Give me half an hour. I’ve gotta write some materials tonight—almost done.', b:'等我半小时，我今天晚上要写材料，快写完了。'},
+  {r:'me', a:'OK.', b:'好。'},
+  {r:'date', a:'2026年10月20日'},
+  {r:'them', a:'Bro, haven’t seen you message in days?', b:'兄弟，好几天没看见你发信息了？'},
+  {r:'them', a:'What’s up with you?', b:'你怎么了？'},
+  {r:'them', a:'Hello?', b:'hello？'},
+  {r:'them', a:'Never mind, guess you’re busy.', b:'算了，估计忙吧。'},
+  {r:'date', a:'2026年10月N日'},
+  {r:'sys', a:'崔聿的手机落在别处 · 你先替他回一句'}
+];
+
+const PARK_NODES = {
+  start: {
+    hint:'替崔聿回一句 · 中文 / 英文自选',
+    opts:[
+      {tag:'A', label:'他手机坏了', sub:'中文', msg:'他手机坏了。', to:'A'},
+      {tag:'B', label:'他手机被我捡到了', sub:'英文', msg:'I picked up his phone.', cb:'他手机被我捡到了。', to:'B'}
+    ]
+  },
+  A: {
+    add:[
+      {r:'them', a:'？？？？'},
+      {r:'them', a:'你是谁啊？崔聿的朋友？'}
+    ],
+    hint:'继续回答 · 中文',
+    opts:[
+      {tag:'a', label:'我是他恋人，他手机坏了，最近这几天用的我的手机。', sub:'中文', msg:'我是他恋人，他手机坏了，最近这几天用的我的手机。', to:'Aa'},
+      {tag:'b', label:'我捡到了他的手机。', sub:'中文', msg:'我捡到了他的手机。', to:'Sb'}
+    ]
+  },
+  Aa: {
+    add:[{r:'them', a:'？？？哎！！！他竟然谈恋爱了吗？！'}],
+    hint:'他有点激动 · 中文',
+    opts:[{tag:'a', label:'刚谈没多久', sub:'中文', msg:'刚谈没多久。', to:'Aa1'}]
+  },
+  Aa1: {
+    add:[{r:'them', a:'没事没事，那你们继续，我先下了，886'}]
+  },
+  Sb: {
+    add:[
+      {r:'them', a:'Ahhh, okay okay, but I don’t have the owner’s contact info either. Maybe try calling the phone?', b:'啊啊啊，好的好的，不过我也没有机主的联系方式，您看看电话试试？'}
+    ],
+    hint:'小 b 线 · 他以为你是好心人',
+    opts:[
+      {tag:'1', label:'Let me check the call log. There’s a contact named “Park Chul”—is that you?', sub:'我看看通话记录，有个备注“朴哲”的，是你吗？', msg:'Let me check the call log. There’s a contact named “Park Chul”—is that you?', cb:'我看看通话记录，有个备注“朴哲”的，是你吗？', to:'Sb1'},
+      {tag:'2', label:'The phone is locked. I can’t open it.', sub:'手机有密码，我打不开。', msg:'The phone is locked. I can’t open it.', cb:'手机有密码，我打不开。', to:'Sb2'},
+      {tag:'3', label:'I’m in a hurry—I left it at the front desk.', sub:'我赶时间，放前台了。', msg:'I’m in a hurry—I left it at the front desk.', cb:'我赶时间，放前台了。', to:'Sb3'},
+      {tag:'4', label:'You’re his friend? Then have him add this number.', sub:'你是他朋友？那你让他加这个号码。', msg:'You’re his friend? Then have him add this number.', cb:'你是他朋友？那你让他加这个号码。', to:'Sb4'}
+    ]
+  },
+  Sb1: {add:[{r:'them', a:'Yes yes, that’s me! Call me and I’ll confirm.', b:'是我是我！你打过来吧，我确认一下。'}]},
+  Sb2: {add:[{r:'them', a:'Then don’t mess with it. Wait for the owner to call, or hand it to a nearby police station?', b:'那你先别乱动，等失主打电话过来？或者交给附近派出所？'}]},
+  Sb3: {add:[{r:'them', a:'Okay, tell me the address. I’ll contact him to pick it up.', b:'行行，告诉我地址，我联系他过去拿。'}]},
+  Sb4: {add:[{r:'them', a:'Sure. I’ll message his other number—but he hasn’t replied for days…', b:'可以，我给他别的号发一下，不过他好几天没回我了……'}]},
+  B: {
+    add:[
+      {r:'them', a:'Ahhh, okay okay, but I don’t have the owner’s contact info either. Maybe try calling the phone?', b:'啊啊啊，好的好的，不过我也没有机主的联系方式，您看看电话试试？'}
+    ],
+    hint:'大 B 线 · 他一直用英文回你',
+    opts:[
+      {tag:'1', label:'I’ll check the call log. There’s a contact named “Park Chul”—is that you?', sub:'我看看通话记录，有个备注“朴哲”的，是你吗？', msg:'I’ll check the call log. There’s a contact named “Park Chul”—is that you?', cb:'我看看通话记录，有个备注“朴哲”的，是你吗？', to:'B1'},
+      {tag:'2', label:'It’s locked. I can’t open it.', sub:'手机锁了，我打不开。', msg:'It’s locked. I can’t open it.', cb:'手机锁了，我打不开。', to:'B2'},
+      {tag:'3', label:'I’m busy—I left it at the front desk.', sub:'我赶时间，放前台了。', msg:'I’m busy—I left it at the front desk.', cb:'我赶时间，放前台了。', to:'B3'},
+      {tag:'4', label:'Are you his friend? Have him message this number.', sub:'你是他朋友？让他加这个号码。', msg:'Are you his friend? Have him message this number.', cb:'你是他朋友？让他加这个号码。', to:'B4'}
+    ]
+  },
+  B1: {add:[{r:'them', a:'Yes, that’s me! Call me and I’ll verify.', b:'是我！你打过来，我确认一下。'}]},
+  B2: {add:[{r:'them', a:'Don’t mess with it. Wait for the owner to call, or hand it to the police.', b:'别乱动，等失主打电话，或者交给警察。'}]},
+  B3: {add:[{r:'them', a:'Tell me the address. I’ll contact him to pick it up.', b:'告诉我地址，我联系他去拿。'}]},
+  B4: {add:[{r:'them', a:'Sure. I’ll message his other number—but he hasn’t replied for days…', b:'可以，我给他另一个号发消息，不过他好几天没回了……'}]}
+};
+
+function parkState() {
+  if (!state.park) state.park = {node:'start'};
+  return state.park;
+}
+function parkTrayHTML() {
+  const ps = parkState();
+  const node = PARK_NODES[ps.node] || PARK_NODES.start;
+  if (node && node.opts) {
+    return `<div class="tt">${esc(node.hint || '替崔聿回一句')}</div>` + node.opts.map((o, i) =>
+      `<button class="pk-choice" data-action="park.pick" data-o="${i}">
+        <span class="tag">${esc(o.tag)}</span>
+        <span class="tx">${esc(o.label)}${o.sub ? `<i>${esc(o.sub)}</i>` : ''}</span>
+        <span class="ar">›</span>
+      </button>`).join('');
+  }
+  return `<div class="tt">这段先到这里</div>
+    <button class="pk-choice" data-action="park.reset">
+      <span class="tag">↺</span>
+      <span class="tx">重新选一条路<i>回到 2026年10月N日，换个身份再回一次</i></span>
+      <span class="ar">›</span>
+    </button>`;
+}
+function appendPark(list) {
+  const log = document.getElementById('pkLog');
+  if (!log) return;
+  log.insertAdjacentHTML('beforeend', list.map(imBubble).join(''));
+  scrollToBottom('msgBody');
+}
+function parkEnter(to) {
+  const node = PARK_NODES[to];
+  const seq = (node && node.add) || [];
+  let i = 0;
+  const step = () => {
+    if (i < seq.length) {
+      appendPark([seq[i++]]);
+      sfx.notif();
+      setTimeout(step, 560);
+    } else {
+      const tray = document.getElementById('pkTray');
+      if (tray) { tray.innerHTML = parkTrayHTML(); tray.classList.add('on'); }
+      scrollToBottom('msgBody');
+    }
+  };
+  setTimeout(step, 520);
+}
+function parkRoom(m) {
+  parkState();
+  return `<div class="app im-app pk-room">
+    <div class="pk-bg" style="background-image:url('${PHOTO_DATA.sea}')"></div>
+    <div class="pk-shade"></div>
+    ${imHead(m, true)}
+    <main class="app-body pk-body" id="msgBody">
+      <div class="im-thread">${PARK_MSGS.map(imBubble).join('')}<div id="pkLog"></div><div id="pkEnd"></div></div>
+    </main>
+    <div class="pk-bottom">
+      <div class="pk-tray on" id="pkTray">${parkTrayHTML()}</div>
+      <div class="pk-input">
+        <button class="plus" data-action="noop" aria-label="更多">＋</button>
+        <input class="fld" id="msgInput" placeholder="iMessage" data-enter="msg.send" />
+        <button class="mic" data-action="noop" aria-label="语音"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></button>
+      </div>
+    </div>
   </div>`;
+}
+
+VIEWS['msg.chat'] = (p) => {
+  const i = +p.i || 0;
+  const m = MSG_THREADS[i] || MSG_THREADS[0];
+  m.unread = 0;
+  state.msgIdx = i;
+  return m.kind === 'park' ? parkRoom(m) : imRoom(m);
 };
 VIEWS['msg.unknown'] = () => `<div class="app msg-app">${appHead('未知来电')}<main class="app-body pad-tab"><div class="empty">没有未知来电。</div></main>${tabbar([{view:'msg.list',label:'消息',svg:SVG_UI.chat},{view:'msg.unknown',label:'未知来电',svg:SVG_UI.user},{view:'msg.more',label:'更多',svg:SVG_UI.more}],1)}</div>`;
 VIEWS['msg.more'] = () => `<div class="app msg-app">${appHead('更多')}<main class="app-body pad-tab"><div class="list-card" style="margin-top:14px">${listRow('消息过滤','拦截未知来电',{icon:`<div class="icon-tile" style="background:#34c759">🛡</div>`})}${listRow('已读回执','开启',{icon:`<div class="icon-tile" style="background:#0a84ff">✓</div>`})}</div></main>${tabbar([{view:'msg.list',label:'消息',svg:SVG_UI.chat},{view:'msg.unknown',label:'未知来电',svg:SVG_UI.user},{view:'msg.more',label:'更多',svg:SVG_UI.more}],2)}</div>`;
@@ -7963,9 +8648,15 @@ function sendMsg() {
   const el = document.createElement('div'); el.className = 'imsg me'; el.textContent = text;
   body.appendChild(el);
   const t = document.createElement('div'); t.style.cssText = 'font-size:8.5px;color:#b0b0b5;padding:0 18px;text-align:right'; t.textContent = koTime(); body.appendChild(t);
+  const th = MSG_THREADS[state.msgIdx] || {};
+  const pool = th.kind === 'park'
+    ? ['行，那你忙完回我。', '嗯，我等你消息。', '好，别忘了吃饭。', '看到了回我一声。']
+    : th.kind === 'im' && th.g === 'c'
+      ? ['네, 확인했습니다.', '好，我知道了。', 'OK，回头说。']
+      : ['好的，确认了。', '收到。', '路上小心。'];
   input.value = ''; sfx.send(); scrollToBottom('msgBody');
   setTimeout(() => {
-    const r = document.createElement('div'); r.className = 'imsg them'; r.textContent = ['好的，确认了。', '收到。', '路上小心。'][Math.floor(Math.random()*3)];
+    const r = document.createElement('div'); r.className = 'imsg them'; r.textContent = pool[Math.floor(Math.random()*pool.length)];
     body.appendChild(r); sfx.notif(); scrollToBottom('msgBody');
   }, 1600);
 }
@@ -7991,6 +8682,22 @@ const ACTIONS = {
   'gpt.send': sendGpt,
   'msg.send': sendMsg,
   'msg.open': el => push('msg.chat', {i:el.dataset.i}),
+  'park.pick': el => {
+    const ps = parkState();
+    const node = PARK_NODES[ps.node] || PARK_NODES.start;
+    const opt = node.opts && node.opts[+el.dataset.o];
+    if (!opt) return;
+    sfx.send();
+    appendPark([{r:'me', a:opt.msg, b:opt.cb}]);
+    ps.node = opt.to;
+    const tray = document.getElementById('pkTray');
+    if (tray) {
+      tray.innerHTML = `<div class="tt">朴哲正在输入…</div><div class="typing-dots" style="background:rgba(255,255,255,.13)"><i></i><i></i><i></i></div>`;
+      tray.classList.add('on');
+    }
+    parkEnter(opt.to);
+  },
+  'park.reset': () => { state.park = {node:'start'}; renderApp(); setTimeout(() => scrollToBottom('msgBody'), 40); },
   'msg.call': () => push('phone.call', {i:0}),
   'phone.call': el => push('phone.call', {i:el.dataset.i || 0}),
   'phone.end': () => { toast('通话已结束。'); setTimeout(back, 250); },
@@ -8273,9 +8980,8 @@ function unlockPhone() {
   sfx.unlock();
   setTimeout(() => { lockscreen.style.display = 'none'; }, 700);
   if (!new URLSearchParams(location.search).get('app')) {
-    setTimeout(() => { showBanner('kakao', '妈妈', '얘, 내일 많이 추워진대. 패딩 챙겨.'); updateBadge('kakao', 13); }, 2200);
-  setTimeout(() => { showBanner('bubble', '지윤', '유울아 오늘 무대 진짜 좋았어 🌸'); }, 9000);
-  setTimeout(() => { showBanner('bubble', 'orbis_0612', '오늘도 보고싶어요 ㅠㅠ'); }, 17000);
+    setTimeout(() => { showBanner('kakao', '妈妈', '아직 바빠? 그럼 나 먼저 갈게. · 还在忙吗？那我先回去了。'); updateBadge('kakao', 13); }, 2400);
+  setTimeout(() => { showBanner('bubble', '지윤', '오빠 오늘 무대 진짜 좋았어 🌸'); }, 11000);
   }
   startAmbientNotifications();
   updateClock();
@@ -8307,26 +9013,25 @@ appview.addEventListener('pointercancel', () => { appGesture = null; });
 /* notification engine */
 let ambientTimer = null, ambientCount = 0;
 const AMBIENT = [
-  {app:'kakao', title:'朴何俊', text:'第二段编舞修改版看了吗？明天 B 工作室见。'},
-  {app:'instagram', title:'yul_novae', text:'新帖子 · 凌晨的钢琴 demo。'},
+  {app:'bubble', title:'지윤', text:'오빠 오늘 무대 진짜 좋았어 🌸'},
+  {app:'instagram', title:'orbis_yul', text:'在 Story 里提到了你：哥哥看这里！'},
+  {app:'x', title:'최율 팬덤', text:'今天的直拍已经 40 万播放了。'},
   {app:'weather', title:'天气', text:'夜间强降雨 · 请带伞。'},
-  {app:'bubble', title:'Bubble', text:'崔聿：下雨天要喝杯热茶。'},
   {app:'baemin', title:'外卖民族', text:'汉南炭火排骨 · 现在下单 25 分钟后送达。'},
   {app:'mail', title:'Mail', text:'XX娱乐 · 10月21日最终行程。'}
 ];
 function startAmbientNotifications() {
   clearTimeout(ambientTimer);
   const loop = () => {
-    if (ambientCount >= 4) return;
+    if (ambientCount >= 2) return;
     ambientCount++;
     const n = AMBIENT[Math.floor(Math.random() * AMBIENT.length)];
     showBanner(n.app, n.title, n.text);
     updateBadge(n.app, (APPS[n.app].badge || 0) + 1);
     pushLockNotif(n.app, n.title, n.text);
-    if (n.app === 'bubble') toast('Bubble · 崔聿的新消息');
-    ambientTimer = setTimeout(loop, 32000 + Math.random() * 18000);
+    ambientTimer = setTimeout(loop, 62000 + Math.random() * 40000);
   };
-  ambientTimer = setTimeout(loop, 38000);
+  ambientTimer = setTimeout(loop, 46000);
 }
 
 /* splash */
@@ -8341,12 +9046,18 @@ function splash(appId) {
 }
 
 /* fit */
+function isTyping() {
+  const a = document.activeElement;
+  return !!a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName);
+}
 function fit() {
+  if (isTyping()) return;
   const s = Math.min(window.innerWidth / 450, window.innerHeight / 910, 1);
   const stage = $('.stage');
   stage.style.transform = `scale(${s})`;
 }
 window.addEventListener('resize', fit);
+window.addEventListener('orientationchange', () => setTimeout(fit, 360));
 
 /* clock + battery */
 setInterval(updateClock, 15000);
@@ -8355,6 +9066,8 @@ document.addEventListener('pointerdown', () => { audioUnlocked = true; audio(); 
 
 /* init */
 if (new URLSearchParams(location.search).get('snap')) document.documentElement.classList.add('snap');
+/* 触摸设备：输入框用 16px，避免 iOS 聚焦时自动放大整页 */
+if (('ontouchstart' in window) || (navigator.maxTouchPoints || 0) > 0) document.documentElement.classList.add('touch');
 buildWallpaper();
 renderSpringboard();
 renderLockNotifs();
@@ -8390,18 +9103,21 @@ if (previewQuery.get('unlock') || previewQuery.get('app')) {
 (function(){
   var phone = document.getElementById('phone');
   var W = 409, H = 868;
+  function typing(){
+    var a = document.activeElement;
+    return !!a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName);
+  }
   function fit(){
+    if (typing()) return;
     var vw = document.documentElement.clientWidth || window.innerWidth;
-    var vh = (window.visualViewport && window.visualViewport.height)
-          || document.documentElement.clientHeight || window.innerHeight;
+    var vh = document.documentElement.clientHeight || window.innerHeight;
     var s = Math.min((vw - 16) / W, (vh - 16) / H);
     phone.style.transform = 'scale(' + s + ')';
     phone.style.transformOrigin = 'center center';
   }
   fit();
   window.addEventListener('resize', fit);
-  window.addEventListener('orientationchange', fit);
-  if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', function(){ setTimeout(fit, 360); });
 })();
 </script>
 </body>
