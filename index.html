@@ -1948,6 +1948,30 @@ html.touch body{touch-action:manipulation}
 .msg-input input{flex:1;height:36px;border-radius:18px;border:1px solid #dedee3;padding:0 13px;outline:0;font-size:12px}
 .msg-input .send{width:34px;height:34px;border-radius:50%;background:#0a84ff;color:#fff;display:grid;place-items:center;flex:none}
 .simple-app{background:#f7f7f9}
+.notify-row{cursor:pointer}
+.notify-row .notify-copy{flex:1;min-width:0;padding-right:6px}
+.notify-row .row-title{font-size:13.5px}
+.notify-row .row-sub{font-size:10.5px;line-height:1.4;margin-top:2px}
+.notify-row[aria-disabled="true"]{opacity:.42;cursor:default}
+.notify-row[aria-disabled="true"]:active{background:#fff}
+.notify-hero{display:flex;align-items:center;gap:12px;margin:0 14px 12px;padding:14px 15px;border-radius:16px;background:linear-gradient(135deg,#ffffff,#f3f6ff);box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.03)}
+.notify-hero-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:#eef3ff;flex:none}
+.notify-hero.off .notify-hero-ic{background:#f0f0f3}
+.notify-hero.silent .notify-hero-ic{background:#fff4e5}
+.notify-hero b{display:block;font-size:14px;font-weight:700;color:#15151a;letter-spacing:-.2px}
+.notify-hero span{display:block;font-size:10px;line-height:1.45;color:#8e8e93;margin-top:3px}
+.notify-clear{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;background:#fff;color:inherit}
+.notify-clear:active{background:#f0f0f4}
+.notify-clear-ic{width:32px;height:32px;border-radius:8px;background:#ff3b30;color:#fff;display:grid;place-items:center;flex:none}
+.notify-clear-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.notify-clear-copy{flex:1;min-width:0}
+.notify-clear-copy b{display:block;font-size:13.5px;font-weight:600;color:#ff3b30;line-height:1.25}
+.notify-clear-copy small{display:block;font-size:10.5px;color:#8e8e93;line-height:1.4;margin-top:2px}
+.notify-clear.is-empty{opacity:.55;cursor:default}
+.notify-clear.is-empty .notify-clear-ic{background:#34c759}
+.notify-clear.is-empty .notify-clear-copy b{color:#3a3a3f}
+.notify-clear .chev{margin-left:auto;color:#c3c3c8;font-size:18px}
+.notify-note{padding:6px 24px 8px;font-size:9.5px;line-height:1.65;color:#9a9aa1;text-align:center}
 .simple-hero{padding:20px 18px;text-align:center}
 .simple-hero .big{width:74px;height:74px;border-radius:20px;margin:0 auto 12px;display:grid;place-items:center;overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,.15)}
 .simple-hero .big svg{width:100%;height:100%}
@@ -1990,8 +2014,11 @@ html.snap *,html.snap *::before,html.snap *::after{animation:none!important;tran
   display:none !important;
 }
 /* === 手机自适应修复 === */
-html,body{height:100dvh!important}
-body{position:fixed!important;inset:0!important;overflow:hidden!important}
+html,body{height:100%;height:100dvh!important}
+body{position:fixed!important;inset:0!important;overflow:hidden!important;overscroll-behavior:none}
+.stage{position:relative;display:grid;place-items:center;width:100%;height:100%;overflow:hidden}
+#phone{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);transform-origin:50% 50%;will-change:transform}
+.stage-glow{left:50%;top:50%;transform:translate(-50%,-50%) translateY(14px)}
 .x-app{background:#fff;color:#0f1419}
 .x-head{display:flex;align-items:center;gap:10px;padding:54px 14px 10px;background:rgba(255,255,255,.96);border-bottom:1px solid #eff3f4;position:sticky;top:0;z-index:30;flex:none}
 .x-logo{flex:1;text-align:center;font-size:19px;font-weight:800;color:#0f1419}
@@ -2390,8 +2417,10 @@ const state = {
 /* ============================================================
    01 · SOUND / HAPTICS / SMALL UI
    ============================================================ */
-/* ===== 通知总开关 ===== */
+/* ===== 通知设置（设置 › 通知） ===== */
 window.NOTIFY_CFG = {
+  enabled: true,  // 允许通知（总开关）
+  silent: false,  // 通知静音：关闭提示音与铃声
   sound: true,    // 所有 sfx 音效
   ring: true,     // 来电铃声 tone()
   banner: true,   // 横幅 showBanner
@@ -2399,54 +2428,81 @@ window.NOTIFY_CFG = {
   badge: true     // 角标 updateBadge
 };
 
-(function initNotifyToggle(){
-  // 启动时从本地读取上次的状态
+window.saveNotifyCfg = function () {
+  try { localStorage.setItem('notifyCfg', JSON.stringify(window.NOTIFY_CFG)); } catch (e) {}
+};
+
+(function loadNotifyCfg(){
+  // 启动时从本地读取上次的状态，并兼容旧版静音开关
   try {
     const saved = JSON.parse(localStorage.getItem('notifyCfg') || 'null');
-    if (saved && window.NOTIFY_CFG) Object.assign(window.NOTIFY_CFG, saved);
+    if (saved && typeof saved === 'object') Object.assign(window.NOTIFY_CFG, saved);
   } catch (e) {}
-
-  const btn = document.createElement('div');
-  btn.id = 'notifyToggleBtn';
-  btn.style.cssText = `
-    position: fixed; right: 16px; bottom: 16px;
-    width: 52px; height: 52px; border-radius: 50%;
-    background: rgba(30,30,40,.85); color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px; z-index: 99999; cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,.3);
-    user-select: none; -webkit-tap-highlight-color: transparent;
-    transition: opacity .2s;
-  `;
-  document.body.appendChild(btn);
-
-  function sync() {
-    const cfg = window.NOTIFY_CFG || {};
-    const muted = cfg.sound === false && cfg.ring === false;
-    btn.textContent = muted ? '🔕' : '🔔';
-    btn.style.opacity = muted ? '.6' : '1';
-  }
-
-  btn.addEventListener('click', () => {
-    const cfg = window.NOTIFY_CFG || (window.NOTIFY_CFG = {});
-    const muted = cfg.sound === false && cfg.ring === false;
-    if (muted) {
-      cfg.sound = true; cfg.ring = true;
-    } else {
-      cfg.sound = false; cfg.ring = false;
-    }
-    try { localStorage.setItem('notifyCfg', JSON.stringify(cfg)); } catch (e) {}
-    sync();
-  });
-
-  sync();
+  const cfg = window.NOTIFY_CFG;
+  if (typeof cfg.enabled !== 'boolean') cfg.enabled = true;
+  if (typeof cfg.silent !== 'boolean') cfg.silent = cfg.sound === false && cfg.ring === false;
+  if (typeof cfg.banner !== 'boolean') cfg.banner = true;
+  if (typeof cfg.lock !== 'boolean') cfg.lock = true;
+  if (typeof cfg.badge !== 'boolean') cfg.badge = true;
+  cfg.sound = !cfg.silent;
+  cfg.ring = !cfg.silent;
 })();
+
+function notifyStatusLabel() {
+  const c = window.NOTIFY_CFG || {};
+  if (c.enabled === false) return '已关闭';
+  if (c.silent) return '已静音';
+  return '横幅 · 声音';
+}
+
+function hideBannerNow() {
+  if (!bannerEl) return;
+  bannerEl.classList.remove('show');
+  bannerEl.style.transition = '';
+  bannerEl.style.transform = '';
+  bannerEl.style.opacity = '';
+  clearTimeout(state.bannerTimer);
+  if (typeof island !== 'undefined' && island) island.classList.remove('active');
+}
+
+function notifyPendingCount() {
+  const lock = document.querySelectorAll('#lockNotifs .lock-notif').length;
+  const badges = Object.keys(APPS).reduce((sum, id) => sum + (APPS[id].badge || 0), 0);
+  return { lock, badges, total: lock + badges };
+}
+
+/* 取消通知：清除横幅、锁屏通知、角标，并停掉自动推来的提醒 */
+function clearAllNotifications() {
+  window.__notifyCancelled = true;
+  clearTimeout(ambientTimer);
+  hideBannerNow();
+  clearTimeout(state.islandTimer);
+  const lockBox = $('#lockNotifs');
+  if (lockBox) lockBox.innerHTML = '';
+  if (typeof LOCK_NOTIFS !== 'undefined') LOCK_NOTIFS.length = 0;
+  Object.keys(APPS).forEach(id => updateBadge(id, 0));
+  window.__notifyClearedAt = Date.now();
+  sfx.close();
+}
+
+function applyNotifyConfig() {
+  const c = window.NOTIFY_CFG || {};
+  const lockBox = $('#lockNotifs');
+  if (lockBox) lockBox.style.display = (c.enabled !== false && c.lock !== false) ? '' : 'none';
+  if (c.enabled === false || c.badge === false) {
+    $$('.app-icon .badge').forEach(el => { el.style.display = 'none'; });
+  } else {
+    Object.keys(APPS).forEach(id => updateBadge(id, APPS[id].badge || 0));
+  }
+  if (c.enabled === false || c.banner === false) hideBannerNow();
+}
 
 
 let actx = null;
 let audioUnlocked = false;
 function audio() {
-  if (window.NOTIFY_CFG && NOTIFY_CFG.sound === false) return null;   // ← 加这行
+  const ncfg = window.NOTIFY_CFG;
+  if (ncfg && (ncfg.enabled === false || ncfg.silent === true || ncfg.sound === false)) return null;
   if (!state.sound || !audioUnlocked) return null;
   try {
     if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2483,6 +2539,8 @@ function toast(msg, ms = 1900) {
 function showBanner(appId, title, text, auto = 4300) {
   /* 通话中不弹任何通知，避免盖住来电界面 */
   if (state.currentApp === 'phone' && (state.callStage === 'live' || state.callStage === 'ring')) return;
+  const ncfg = window.NOTIFY_CFG || {};
+  if (ncfg.enabled === false || ncfg.banner === false) return;
   const meta = APPS[appId] || APPS.kakao;
   bannerEl.dataset.app = appId;
   bannerEl.innerHTML = `
@@ -2735,12 +2793,18 @@ function iconHTML(id, dock = false) {
 
 function updateBadge(id, n) {
   const meta = APPS[id]; if (!meta) return;
-  meta.badge = Math.max(0, n);
+  const prev = meta.badge || 0;
+  n = Math.max(0, n);
+  meta.badge = n;
+  const ncfg = window.NOTIFY_CFG || {};
+  const visible = ncfg.enabled !== false && ncfg.badge !== false;
   $$(`[data-badge="${id}"]`).forEach(el => {
     el.textContent = n > 99 ? '99+' : n;
-    el.style.display = n > 0 ? '' : 'none';
-    el.classList.add('pop');
-    setTimeout(() => el.classList.remove('pop'), 260);
+    el.style.display = (visible && n > 0) ? '' : 'none';
+    if (n !== prev) {
+      el.classList.add('pop');
+      setTimeout(() => el.classList.remove('pop'), 260);
+    }
   });
 }
 
@@ -3543,6 +3607,8 @@ function renderLockNotifs() {
   }).join('');
 }
 function pushLockNotif(appId, title, text) {
+  const ncfg = window.NOTIFY_CFG || {};
+  if (ncfg.enabled === false || ncfg.lock === false) return;
   const a = APPS[appId] || APPS.kakao;
   const box = $('#lockNotifs'); if (!box) return;
   const el = document.createElement('div');
@@ -3581,6 +3647,7 @@ window.scheduleFreshNotifs = function () {
   };
   let fired = 0;
   const fire = () => {
+    if (window.__notifyCancelled) return;
     if (fired >= 3) return;
     const n = pick();
     if (!n) return;
@@ -3751,6 +3818,13 @@ function listRow(title, sub, opts = {}) {
     <div style="flex:1;min-width:0"><div class="row-title">${title}</div>${sub ? `<div class="row-sub">${esc(sub)}</div>` : ''}</div>
     ${opts.value ? `<span class="value">${esc(opts.value)}</span>` : ''}
     ${opts.chevron === false ? '' : `<span class="chev">›</span>`}
+  </div>`;
+}
+function switchRow(title, sub, key, on, disabled = false) {
+  const action = disabled ? 'aria-disabled="true"' : 'data-action="notify.toggle"';
+  return `<div class="list-row notify-row" ${action} data-key="${key}" role="switch" aria-checked="${on ? 'true' : 'false'}">
+    <div class="notify-copy"><div class="row-title">${esc(title)}</div>${sub ? `<div class="row-sub">${esc(sub)}</div>` : ''}</div>
+    <div class="toggle${on ? ' on' : ''}"></div>
   </div>`;
 }
 
@@ -7970,7 +8044,7 @@ window.ringLostPhone = function () {
   clearInterval(state.ringTick);
   const ring = () => {
     if (state.callStage !== 'ring') { clearInterval(state.ringTick); return; }
-   if (window.NOTIFY_CFG && NOTIFY_CFG.ring === false) return;   // ← 加这行
+   if (window.NOTIFY_CFG && (NOTIFY_CFG.enabled === false || NOTIFY_CFG.silent === true || NOTIFY_CFG.ring === false)) return;   // ← 通知设置里的铃声开关
     try { tone(1046, 0, .16, 'sine', .03); tone(1318, .19, .16, 'sine', .03); } catch (e) {}
   };
   ring();
@@ -8922,7 +8996,7 @@ VIEWS['settings.home'] = () => `<div class="app simple-app">
       ${listRow('蜂窝网络','5G · 流量 18.4GB',{icon:`<div class="icon-tile" style="background:#34c759">📱</div>`})}
     </div>
     <div class="list-card">
-      ${listRow('通知','',{icon:`<div class="icon-tile" style="background:#ff3b30">🔔</div>`})}
+      ${listRow('通知',notifyStatusLabel(),{icon:`<div class="icon-tile" style="background:#ff3b30">🔔</div>`,go:'settings.notify'})}
       ${listRow('声音与触感','',{icon:`<div class="icon-tile" style="background:#ff2d55">🔊</div>`})}
       ${listRow('专注模式','入睡 · 23:30',{icon:`<div class="icon-tile" style="background:#5e5ce6">🌙</div>`})}
       ${listRow('屏幕使用时间','',{icon:`<div class="icon-tile" style="background:#5856d6">⏳</div>`})}
@@ -8931,6 +9005,40 @@ VIEWS['settings.home'] = () => `<div class="app simple-app">
     <div style="text-align:center;font-size:8.5px;color:#b0b0b5;padding:9px 18px;line-height:1.5">iPhone 15 Pro · iOS 17.2 · 所有信息均为虚构<br>图片来源：Unsplash · Wikimedia Commons</div>
   </main>
 </div>`;
+VIEWS['settings.notify'] = () => {
+  const c = window.NOTIFY_CFG || {};
+  const on = c.enabled !== false;
+  const silent = c.silent === true;
+  const pending = notifyPendingCount();
+  const heroTitle = !on ? '通知已关闭' : silent ? '通知已静音' : '通知已开启';
+  const heroSub = !on ? '应用不会弹出横幅或锁屏通知' : silent ? '提示音与铃声已关闭，横幅仍会显示' : '横幅、锁屏通知与提示音均正常';
+  return `<div class="app simple-app">
+    ${appHead('通知', {sub:'设置 · Notifications'})}
+    <main class="app-body" style="padding-bottom:40px">
+      <div class="notify-hero ${!on ? 'off' : silent ? 'silent' : ''}">
+        <div class="notify-hero-ic">${!on ? '🔕' : silent ? '🔇' : '🔔'}</div>
+        <div><b>${heroTitle}</b><span>${heroSub}</span></div>
+      </div>
+      <div class="list-card">
+        ${switchRow('允许通知', '总开关 · 关闭后所有应用都不再提醒', 'enabled', on)}
+        ${switchRow('通知静音', '关闭提示音与来电铃声，横幅和锁屏仍然显示', 'silent', silent, !on)}
+      </div>
+      <div class="list-card">
+        ${switchRow('横幅', '使用手机时在顶部弹出通知', 'banner', c.banner !== false, !on)}
+        ${switchRow('锁定屏幕', '在锁屏上显示收到的通知', 'lock', c.lock !== false, !on)}
+        ${switchRow('应用图标标记', '在应用图标上显示未读角标', 'badge', c.badge !== false, !on)}
+      </div>
+      <div class="list-card">
+        <button class="notify-clear${pending.total ? '' : ' is-empty'}" ${pending.total ? 'data-action="notify.clear"' : 'disabled'}>
+          <span class="notify-clear-ic"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v5M14 11v5"/></svg></span>
+          <span class="notify-clear-copy"><b>${pending.total ? '取消所有通知' : '通知已清空'}</b><small>${pending.total ? `锁屏 ${pending.lock} 条 · 图标角标 ${pending.badges} 个` : '暂时没有待处理的通知'}</small></span>
+          <span class="chev">›</span>
+        </button>
+      </div>
+      <div class="notify-note">「通知静音」只关闭声音，不影响横幅和锁屏显示。<br>「取消所有通知」会清除横幅、锁屏通知和角标，并停止自动推送的提醒。</div>
+    </main>
+  </div>`;
+};
 VIEWS['camera.view'] = () => `<div class="app camera-view">
   <div class="camera-stage">${art('city','')}<div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,transparent 30%,rgba(0,0,0,.35) 100%)"></div></div>
   <div class="camera-ui">
@@ -9420,6 +9528,29 @@ const ACTIONS = {
   'safari.search': () => { const v = $('#safariSearch')?.value.trim(); if (v) { push('safari.page', {site:v}); } },
   'map.select': el => { state.mapPlace = el.dataset.place; replace('map.home', {place:el.dataset.place}); },
   'camera.shot': () => { const flash = document.createElement('div'); flash.style.cssText = 'position:absolute;inset:0;background:#fff;z-index:50;opacity:.9;transition:opacity .35s;pointer-events:none'; appview.appendChild(flash); requestAnimationFrame(()=>flash.style.opacity='0'); setTimeout(()=>flash.remove(),420); toast('已保存照片。'); },
+  'notify.toggle': el => {
+    const key = el.dataset.key;
+    const cfg = window.NOTIFY_CFG || (window.NOTIFY_CFG = {});
+    if (key === 'enabled') {
+      cfg.enabled = cfg.enabled === false;
+      if (cfg.enabled) window.__notifyCancelled = false;
+    } else if (key === 'silent') {
+      cfg.silent = !cfg.silent;
+      cfg.sound = !cfg.silent;
+      cfg.ring = !cfg.silent;
+    } else {
+      cfg[key] = cfg[key] === false;
+    }
+    window.saveNotifyCfg();
+    applyNotifyConfig();
+    sfx.tap();
+    rerenderSettings();
+  },
+  'notify.clear': () => {
+    clearAllNotifications();
+    applyNotifyConfig();
+    rerenderSettings();
+  },
   'calc.key': el => {
     const k = el.dataset.key;
     if (k === 'AC') state.calc = '0';
@@ -9437,6 +9568,15 @@ function handleAction(el) {
   const fn = ACTIONS[a];
   if (fn) fn(el);
   else toast('这是演示界面。');
+}
+function rerenderSettings() {
+  const top = state.stack[state.stack.length - 1];
+  if (!top || !/^settings\./.test(top.view)) return;
+  const body = appview.querySelector('.app-body');
+  const y = body ? body.scrollTop : 0;
+  renderApp();
+  const nb = appview.querySelector('.app-body');
+  if (nb) nb.scrollTop = y;
 }
 
 /* ============================================================
@@ -9709,6 +9849,7 @@ const AMBIENT = [
 function startAmbientNotifications() {
   clearTimeout(ambientTimer);
   const loop = () => {
+    if (window.__notifyCancelled) return;
     if (ambientCount >= 2) return;
     ambientCount++;
     const n = AMBIENT[Math.floor(Math.random() * AMBIENT.length)];
@@ -9731,20 +9872,6 @@ function splash(appId) {
   setTimeout(() => el.remove(), 900);
 }
 
-/* fit */
-function isTyping() {
-  const a = document.activeElement;
-  return !!a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName);
-}
-function fit() {
-  if (isTyping()) return;
-  const s = Math.min(window.innerWidth / 450, window.innerHeight / 910, 1);
-  const stage = $('.stage');
-  stage.style.transform = `scale(${s})`;
-}
-window.addEventListener('resize', fit);
-window.addEventListener('orientationchange', () => setTimeout(fit, 360));
-
 /* clock + battery */
 setInterval(updateClock, 15000);
 setInterval(() => { const v = parseInt($('#batTxt').textContent, 10); if (v > 15) setBattery(v - 1); }, 90000);
@@ -9757,11 +9884,11 @@ if (('ontouchstart' in window) || (navigator.maxTouchPoints || 0) > 0) document.
 buildWallpaper();
 renderSpringboard();
 renderLockNotifs();
+applyNotifyConfig();
 if (window.scheduleFreshNotifs) scheduleFreshNotifs();
 updateClock();
 setBattery(78);
 setStatus(false);
-fit();
 console.log('%c崔聿的小手机 · SEOUL 23:57','color:#7db4ff;font-weight:700;font-size:14px;letter-spacing:1px');
 
 /* preview hooks: ?unlock=1 or ?app=kakao */
@@ -9788,22 +9915,42 @@ if (previewQuery.get('unlock') || previewQuery.get('app')) {
 <script>
 (function(){
   var phone = document.getElementById('phone');
-  var W = 409, H = 868;
+  if (!phone) return;
+  var W = 409, H = 868, GAP = 16;
   function typing(){
     var a = document.activeElement;
     return !!a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName);
   }
+  function viewport(){
+    var vw = document.documentElement.clientWidth || window.innerWidth || W;
+    var vh = window.innerHeight || document.documentElement.clientHeight || H;
+    var vv = window.visualViewport;
+    if (vv && vv.height) vh = Math.min(vh, vv.height);
+    return { w: vw, h: vh };
+  }
   function fit(){
     if (typing()) return;
-    var vw = document.documentElement.clientWidth || window.innerWidth;
-    var vh = document.documentElement.clientHeight || window.innerHeight;
-    var s = Math.min((vw - 16) / W, (vh - 16) / H);
-    phone.style.transform = 'scale(' + s + ')';
-    phone.style.transformOrigin = 'center center';
+    var vp = viewport();
+    var s = Math.min((vp.w - GAP) / W, (vp.h - GAP) / H);
+    if (!isFinite(s) || s <= 0) return;
+    phone.style.transform = 'translate(-50%,-50%) scale(' + (Math.round(s * 10000) / 10000) + ')';
+    phone.style.transformOrigin = '50% 50%';
+  }
+  var raf = 0;
+  function schedule(){
+    if (raf) return;
+    raf = requestAnimationFrame(function(){ raf = 0; fit(); });
   }
   fit();
-  window.addEventListener('resize', fit);
-  window.addEventListener('orientationchange', function(){ setTimeout(fit, 360); });
+  window.addEventListener('resize', schedule);
+  window.addEventListener('orientationchange', function(){ setTimeout(fit, 240); setTimeout(fit, 620); });
+  window.addEventListener('pageshow', function(){ setTimeout(fit, 60); });
+  window.addEventListener('load', function(){ setTimeout(fit, 40); });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', schedule);
+    window.visualViewport.addEventListener('scroll', schedule);
+  }
+  document.addEventListener('focusout', function(){ setTimeout(fit, 260); });
 })();
 </script>
 </body>
